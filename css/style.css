@@ -1,0 +1,619 @@
+/* General Body and Container Styles */
+body {
+    font-family:Arial, Helvetica, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    background-color: #fff; /* White background as requested */
+    color: #1f2937; /* Default text color (dark gray) */
+}
+
+.container {
+    width: 100%;
+    max-width: 960px; /* max-w-4xl equivalent */
+    margin: 20px auto;
+    padding: 24px; /* p-6 equivalent */
+    background-color: #FFFFFF; /* White background for the main content area */
+    border-radius: 8px; /* rounded-lg equivalent */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl equivalent */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+/* Dark Mode Specific Styles (controlled by 'dark' class on <html> element) */
+html.dark body {
+    background-color: #1a202c; /* Dark background for body in dark mode */
+    color: #e2e8f0; /* Light text for body in dark mode */
+}
+html.dark .container {
+    background-color: #2d3748; /* Darker background for main container in dark mode */
+    color: #e2e8f0;
+}
+html.dark .text-gray-700 { /* For welcome message */
+    color: #cbd5e0;
+}
+html.dark input,
+html.dark select {
+    background-color: #4a5568;
+    color: #e2e8f0;
+    border-color: #6b7280;
+}
+html.dark input::placeholder {
+    color: #a0aec0;
+}
+
+/* Navbar Styles */
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #A0522D; /* Brown background as requested */
+    color: #fff; /* White text as requested */
+    font-weight: bold;
+    padding: 15px 20px; /* Padding for the nav bar */
+    border-radius: 8px 8px 0 0; /* Rounded top corners */
+}
+html.dark .nav-bar {
+    background-color: #6F4E37; /* Slightly darker brown for dark mode nav */
+    border-color: #4a5568; /* Dark mode border */
+}
+
+.nav-bar h1 {
+    font-size: 2.25rem;
+    color: #fff; /* Ensure white text for h1 in nav bar */
+}
+
+.nav-bar-icons {
+    display: flex;
+    gap: 16px;
+}
+.nav-bar-icons button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #C07C4A; /* A lighter brown for buttons */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none; /* Remove default button border */
+    cursor: pointer;
+}
+.nav-bar-icons button:hover {
+    background-color: #A0522D; /* Darker brown on hover */
+    transform: translateY(-2px);
+}
+html.dark .nav-bar-icons button {
+    background-color: #5A3F2F; /* Dark mode button background */
+}
+html.dark .nav-bar-icons button:hover {
+    background-color: #6F4E37; /* Darker dark mode button hover */
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* Optional: invert image icons in dark mode */
+html.dark .icon {
+    filter: invert(1);
+  }
+  
+/* === HEART (LIKE) ICON STYLES === */
+.heart-icon {
+    width: 20px;
+    height: 20px;
+    fill: crimson;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+  
+.heart-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Ensure light mode icon is visible on light button background */
+html:not(.dark) #theme-toggle-light-icon {
+    fill: #5C4033;
+}
+/* Ensure the favorites icon image is styled if using img tag */
+#favoritesIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    fill: currentColor;
+    /* For img tags, filter may be needed for color inversion in dark mode */
+    /* Example: html.dark #favoritesIcon { filter: invert(1); } */
+}
+
+.heart-icon {
+    width: 20px;
+    height: 20px;
+    fill: crimson;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.heart-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Hamburger Menu Styles */
+.hamburger-menu {
+    display: none; /* Hidden by default on larger screens */
+    position: relative;
+    z-index: 200; /* Ensure it's above other content when open */
+}
+.hamburger-icon {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+}
+.hamburger-icon span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #fff; /* White for hamburger lines in brown nav bar */
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+html.dark .hamburger-icon span {
+    background-color: #e2e8f0; /* Light color for lines in dark mode nav */
+}
+.hamburger-icon.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger-icon.open span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger-icon.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.menu-links {
+    list-style: none;
+    position: absolute;
+    top: 60px; /* Adjust based on navbar height */
+    left: 0;
+    background-color: #fff; /* Default background for dropdown */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    max-height: 0; /* Initially hidden */
+    transition: max-height 0.3s ease-in-out;
+    z-index: 100;
+    width: 180px; /* Adjust width as needed */
+}
+html.dark .menu-links {
+    background-color: #2d3748; /* Dark mode background for dropdown */
+}
+.menu-links.open {
+    max-height: 200px; /* Adjust based on content to make it visible */
+}
+.menu-links li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #5C4033; /* Dark brown text for menu links */
+    transition: background-color 0.2s ease;
+}
+html.dark .menu-links li a {
+    color: #e2e8f0; /* Light text for menu links in dark mode */
+}
+.menu-links li a:hover {
+    background-color: #F0F0D0; /* Lighter cream on hover */
+}
+html.dark .menu-links li a:hover {
+    background-color: #4a5568; /* Darker hover for dark mode */
+}
+
+/* Welcome Paragraph */
+.container > p { /* Target direct child p of container for welcome message */
+    font-size: 1.125rem;
+    color: #5C4033; /* Dark brown for welcome text */
+    margin-bottom: 24px;
+    text-align: center;
+    line-height: 1.625;
+}
+html.dark .container > p {
+    color: #E2E8F0; /* Light text in dark mode */
+}
+
+
+/* Control Panel (Search and Filter) */
+.control-panel {
+    display: flex;
+    flex-direction: column; /* Default for mobile */
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+@media (min-width: 640px) { /* Small breakpoint for larger screens */
+    .control-panel {
+        flex-direction: row;
+    }
+}
+.control-panel input,
+.control-panel select {
+    flex-grow: 1;
+    width: 100%; /* Full width on mobile */
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Ensures padding is included in element's total width */
+}
+.control-panel input:focus,
+.control-panel select:focus {
+    border-color: #A0522D; /* Brown border on focus */
+    box-shadow: 0 0 0 2px rgba(160, 82, 45, 0.5); /* Brown shadow on focus */
+}
+
+/* Card Grid Layouts */
+.outfits-grid, .complementary-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 24px;
+}
+@media (min-width: 768px) { /* Medium breakpoint */
+    .outfits-grid, .complementary-items-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1024px) { /* Large breakpoint */
+    .outfits-grid, .complementary-items-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Generic Card Styling */
+.card {
+    background-color: #FFFDD0; /* Cream background as requested */
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #D2B48C; /* Light brown border for cards */
+    position: relative;
+    box-sizing: border-box;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+html.dark .card {
+    background-color: #36281D; /* Darker cream/brown for dark mode cards */
+    border-color: #6F4E37; /* Dark mode border */
+}
+
+/* Outfit Card Specific Styles (for blur and like button) */
+.outfit-card {
+    cursor: pointer;
+    overflow: hidden;
+}
+.card-image-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.card-image {
+    width: 100%;
+    height: 192px;
+    object-fit: cover;
+    transition: filter 0.3s ease-in-out;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.outfit-card.blurred .card-image {
+    filter: blur(8px); /* Blur effect */
+}
+.description-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+.outfit-card.blurred .description-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #5C4033; /* Dark brown for card titles */
+}
+html.dark .card-title {
+    color: #F8F8E0; /* Lighter text for dark mode card titles */
+}
+.card-style {
+    color: #6b7280; /* Gray for style text */
+    font-size: 0.75rem;
+}
+html.dark .card-style {
+    color: #A0A0A0; /* Lighter gray in dark mode */
+}
+.card-style span {
+    font-weight: 500;
+}
+
+/* Like Button */
+.like-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 9999px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border: none;
+}
+.like-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+html.dark .like-button {
+    background: rgba(0, 0, 0, 0.6);
+}
+html.dark .like-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+.like-button svg {
+    width: 24px;
+    height: 24px;
+    fill: #A0522D; /* Default brown heart */
+    transition: fill 0.2s ease;
+}
+.like-button.liked svg {
+    fill: #EF4444; /* Red heart when liked */
+}
+
+/* Product Card Specific Styles (for complementary items) */
+.product-card .product-image {
+    width: 100%;
+    height: 192px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.product-card .product-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #5C4033; /* Dark brown for product titles */
+}
+html.dark .product-card .product-title {
+    color: #F8F8E0; /* Lighter text for dark mode product titles */
+}
+.product-card .product-price {
+    color: #5C4033; /* Dark brown for product price */
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+}
+html.dark .product-card .product-price {
+    color: #A0A0A0; /* Lighter gray in dark mode */
+}
+.product-card .product-category {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+html.dark .product-card .product-category {
+    color: #A0A0A0; /* Lighter gray in dark mode */
+}
+
+
+/* Sections and Buttons */
+.main-content, .favorites-section {
+    padding-top: 32px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 48px;
+}
+html.dark .main-content, html.dark .favorites-section {
+    border-color: #4a5568;
+}
+
+.main-content h2, .favorites-section h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #A0522D; /* Brown for section headers */
+}
+html.dark .main-content h2, html.dark .favorites-section h2 {
+    color: #D2B48C; /* Lighter brown in dark mode */
+}
+
+.main-content button#discoverItemsBtn,
+.favorites-section button#backToAllLooksBtn {
+    display: block;
+    margin: 32px auto;
+    background-color: #A0522D; /* Brown button */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.main-content button#discoverItemsBtn:hover,
+.favorites-section button#backToAllLooksBtn:hover {
+    background-color: #8B4513; /* Darker brown on hover */
+    transform: translateY(-2px);
+}
+html.dark .main-content button#discoverItemsBtn,
+html.dark .favorites-section button#backToAllLooksBtn {
+    background-color: #6F4E37; /* Dark mode button */
+}
+html.dark .main-content button#discoverItemsBtn:hover,
+html.dark .favorites-section button#backToAllLooksBtn:hover {
+    background-color: #5A3F2F; /* Darker dark mode button hover */
+}
+
+
+/* Loading and Error Indicators */
+.loader-indicator, .error-message, .no-favorites-message {
+    text-align: center;
+    padding: 16px 0;
+}
+.loader-indicator div {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid #A0522D; /* Brown spinner */
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+html.dark .loader-indicator div {
+    border-color: #D2B48C; /* Lighter brown spinner in dark mode */
+    border-bottom-color: transparent;
+}
+.loader-indicator p {
+    margin-top: 8px;
+    color: #5C4033; /* Dark brown for loading text */
+}
+html.dark .loader-indicator p {
+    color: #E2E8F0; /* Light text in dark mode */
+}
+.error-message p {
+    color: #dc2626; /* Red for error messages */
+}
+.no-favorites-message {
+    color: #6b7280; /* Gray for no favorites message */
+}
+html.dark .no-favorites-message {
+    color: #A0A0A0; /* Lighter gray in dark mode */
+}
+
+
+/* Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hidden Utility Class (managed by JS) */
+.hidden {
+    display: none !important;
+}
+
+/* Toast Notification Styles */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    z-index: 1000;
+    font-size: 0.9rem;
+    text-align: center;
+}
+.toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* Media queries for responsiveness of navbar */
+@media (max-width: 639px) { /* Max-width for mobile view */
+    .nav-bar {
+        flex-direction: column;
+        align-items: flex-start; /* Align items to start for stacking */
+        padding-left: 0;
+        padding-right: 0;
+        border-radius: 0; /* No rounded corners for full width on mobile */
+    }
+    .nav-bar h1 {
+        margin-bottom: 16px;
+        text-align: center;
+        width: 100%; /* Take full width */
+    }
+    .nav-bar-icons {
+        margin-top: 16px;
+        width: 100%; /* Take full width */
+        justify-content: center; /* Center buttons */
+    }
+    .nav-bar-icons button {
+        width: 48%; /* Adjust button width to fit two per row */
+        font-size: 0.9rem; /* Slightly smaller font */
+        padding: 6px 12px; /* Smaller padding */
+    }
+    .hamburger-menu {
+        display: block; /* Show hamburger on small screens */
+        order: -1; /* Place it at the beginning */
+        margin-bottom: 16px;
+        padding-left: 16px; /* Align with content */
+    }
+    .menu-links {
+        position: static; /* Position within normal flow */
+        width: 100%; /* Take full width */
+        box-shadow: none; /* No shadow for static menu */
+        text-align: center;
+        background-color: transparent; /* Transparent background */
+        border-radius: 0;
+        max-height: 0; /* Hidden by default */
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out;
+    }
+    html.dark .menu-links {
+        background-color: transparent;
+    }
+    .menu-links.open {
+        max-height: 200px; /* Adjust as needed to show links */
+    }
+    .menu-links li a {
+        padding: 12px 0; /* Adjust padding for links */
+    }
+
+    /* Adjust control panel for mobile */
+    .control-panel {
+        flex-direction: column;
+        align-items: stretch; /* Stretch items to fill width */
+    }
+}
+
+

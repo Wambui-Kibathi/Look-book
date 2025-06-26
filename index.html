@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Look-book</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <h1>Look-book</h1>
+      <nav id="hamburger-nav">
+        <div class="hamburger-menu">
+          <div class="hamburger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="menu-links">
+            <li><a href="#about" onclick="toggleMenu()">About</a></li>
+            <li><a href="#products" onclick="toggleMenu()">Products</a></li>
+            <li><a href="#favorites" onclick="toggleMenu()">Favorites</a></li>
+          </div>
+        </div>
+      </nav>
+
+      <div class="nav-bar-icons">
+        <!-- 🌙 Light/Dark Mode Toggle -->
+        <button id="darkModeToggle">
+          <img id="theme-toggle-dark-icon" src="./Icons/moon.png" class="icon" alt="Dark Mode Icon" />
+          <img id="theme-toggle-light-icon" src="./Icons/sun.png" class="icon" alt="Light Mode Icon" />
+        </button>
+
+        <!-- ❤️ Favorites Button -->
+        <button id="viewFavoritesBtn">
+          <img id="favoritesIcon" src="./Icons/heart.png" class="icon" alt="Favorites Icon" />
+          View Favorites (<span id="favoritesCount">0</span>)
+        </button>
+      </div>
+    </div>
+
+    <p>
+      Hi there! Welcome to Look-book. Discover daily outfit inspirations from Business Chic to Vintage Streetwear. Click a look to like it and save it to favorites.
+    </p>
+
+    <div id="mainContent" class="main-content">
+      <div class="control-panel">
+        <input type="text" id="searchOutfits" placeholder="Search outfits by name or description..." />
+        <select id="styleFilter">
+          <option value="">Filter by Style Category</option>
+        </select>
+      </div>
+
+      <div id="loadingIndicator" class="loader-indicator hidden">
+        <p>Loading outfits...</p>
+      </div>
+
+      <div id="outfitsContainer" class="outfits-grid"></div>
+
+      <div id="errorMessage" class="hidden">
+        <p>Oops! Something went wrong while loading outfits. Please try again.</p>
+      </div>
+
+      <div class="complementary-items-section">
+        <h2>Suggested Complementary Items</h2>
+        <div>
+          <button id="discoverItemsBtn">Discover More Items</button>
+        </div>
+        <div id="loadingComplementaryItems" class="loader-indicator hidden">
+          <p>Loading items...</p>
+        </div>
+        <div id="complementaryItemsContainer" class="complementary-items-grid"></div>
+        <div id="complementaryItemsError" class="error-message hidden">
+          <p>Could not load complementary items. Please try again.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="favoritesSection" class="favorites-section hidden">
+      <h2>My Favorite Looks</h2>
+      <div id="favoriteOutfitsContainer" class="outfits-grid"></div>
+      <p id="noFavoritesMessage" class="no-favorites-message hidden">You haven't liked any outfits yet. Start exploring!</p>
+      <button id="backToAllLooksBtn">Back to All Looks</button>
+    </div>
+
+    <div id="toastNotification" class="toast-notification hidden">
+      Try it out yourself!
+    </div>
+
+    <script src="./src/index.js"></script>
+  </div>
+</body>
+</html>
