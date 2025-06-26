@@ -69,6 +69,28 @@ html.dark .nav-bar {
     color: #fff; /* Ensure white text for h1 in nav bar */
 }
 
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    text-decoration-color: #000;
+}
+
+a:hover {
+    color: grey;
+    text-decoration: underline;
+    text-underline-offset: 1rem;
+    text-decoration-color: rgb(181, 181, 181);
+}
+
 .nav-bar-icons {
     display: flex;
     gap: 16px;
@@ -197,6 +219,9 @@ html.dark .hamburger-icon span {
     z-index: 100;
     width: 180px; /* Adjust width as needed */
 }
+html {
+    scroll-behavior: smooth;
+}
 html.dark .menu-links {
     background-color: #2d3748; /* Dark mode background for dropdown */
 }
@@ -220,19 +245,41 @@ html.dark .menu-links li a:hover {
     background-color: #4a5568; /* Darker hover for dark mode */
 }
 
-/* Welcome Paragraph */
-.container > p { /* Target direct child p of container for welcome message */
-    font-size: 1.125rem;
-    color: #5C4033; /* Dark brown for welcome text */
-    margin-bottom: 24px;
-    text-align: center;
-    line-height: 1.625;
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    margin-bottom: 2rem;
 }
-html.dark .container > p {
-    color: #E2E8F0; /* Light text in dark mode */
+  
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
 }
-
-
+  
+.hero-text {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    color: #5C4033;
+    font-size: 1.5rem;
+    max-width: 50%;
+    background-color: white; /* optional: darken behind text */
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgb(0, 0, 0, 0.1);
+}
+  
+html.dark .hero-text {
+    background-color: #333;
+    color: #fff;
+}
 /* Control Panel (Search and Filter) */
 .control-panel {
     display: flex;
@@ -247,6 +294,16 @@ html.dark .container > p {
         flex-direction: row;
     }
 }
+@media (max-width: 639px) { /* Max-width for mobile view */
+    /* ... existing styles for .nav-bar, .nav-bar h1, etc. ... */
+
+    .nav-links { /* ADD THIS BLOCK */
+        display: none; /* Hides the main horizontal nav links on small screens */
+    }
+
+    /* ... rest of your mobile styles ... */
+}
+
 .control-panel input,
 .control-panel select {
     flex-grow: 1;
@@ -264,6 +321,9 @@ html.dark .container > p {
     box-shadow: 0 0 0 2px rgba(160, 82, 45, 0.5); /* Brown shadow on focus */
 }
 
+
+  
+  
 /* Card Grid Layouts */
 .outfits-grid, .complementary-items-grid {
     display: grid;
@@ -616,4 +676,131 @@ html.dark .no-favorites-message {
     }
 }
 
+.footer {
+    margin-top: 3rem; /* mt-12 equivalent */
+    padding: 2.5rem 1.5rem; /* py-10 px-6 equivalent */
+    background-color: #A0522D; /* bg-A0522D equivalent */
+    color: #fff; /* text-white equivalent */
+    border-top-left-radius: 0.5rem; /* rounded-t-lg equivalent */
+    border-top-right-radius: 0.5rem; /* rounded-t-lg equivalent */
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); /* shadow-inner equivalent, approximating */
+}
 
+html.dark .footer {
+    background-color: #6f4e37;
+}
+
+.footer-container {
+    max-width: 960px; /* container mx-auto equivalent */
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column; /* flex-col equivalent */
+    justify-content: space-around;
+    align-items: center; /* items-center equivalent */
+    gap: 2rem; /* gap-8 equivalent */
+    text-align: center; /* text-center equivalent */
+}
+
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+.footer-section {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .footer-section {
+        width: 33.33%;
+    }
+}
+
+.footer-section h3 {
+    font-weight: bold; /* font-bold equivalent */
+    font-size: 1.5rem; /* text-2xl equivalent (adjust if 2xl means 2rem in your setup) */
+    margin-bottom: 1rem; /* mb-4 equivalent */
+}
+
+.footer-section p {
+    font-size: 0.875rem; /* text-sm equivalent */
+    margin-bottom: 1rem; /* mb-4 equivalent */
+    opacity: 0.8; /* opacity-80 equivalent */
+    line-height: 1.5; /* Added for readability */
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column; /* flex-col equivalent */
+    gap: 0.75rem; /* gap-3 equivalent */
+}
+
+.newsletter-form input[type="email"] {
+    padding: 0.75rem; /* p-3 equivalent */
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    border: 2px solid rgba(255, 255, 255, 0.3); /* border-2 border-white/30 equivalent */
+    background-color: rgba(255, 255, 255, 0.1); /* bg-white/10 equivalent */
+    color: #fff; /* text-white equivalent */
+    outline: none; /* focus:outline-none equivalent */
+    transition: border-color 0.3s ease; /* transition-colors duration-300 equivalent */
+}
+
+.newsletter-form input[type="email"]::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* placeholder-white/70 equivalent */
+}
+
+.newsletter-form input[type="email"]:focus {
+    border-color: rgba(255, 255, 255, 0.7); /* focus:border-white/70 equivalent */
+}
+
+.newsletter-form button {
+    background-color: #C07C4A; /* bg-C07C4A equivalent */
+    color: white;
+    font-weight: 600; /* font-semibold equivalent */
+    padding: 0.75rem 1.5rem; /* py-3 px-6 equivalent */
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md equivalent */
+    transition: background-color 0.3s ease; /* hover:bg-A0522D transition-colors duration-300 equivalent */
+    border: none;
+    cursor: pointer;
+}
+
+.newsletter-form button:hover {
+    background-color: #A0522D; /* hover:bg-A0522D equivalent */
+}
+
+.newsletter-message {
+    margin-top: 0.75rem; /* mt-3 equivalent */
+    font-size: 0.875rem; /* text-sm equivalent */
+    opacity: 0.9; /* opacity-90 equivalent */
+}
+
+.footer-section a {
+    color: #fff; /* text-white equivalent */
+    text-decoration: underline; /* underline equivalent */
+    text-underline-offset: 0.25rem; /* underline-offset-4 equivalent */
+    transition: color 0.3s ease; /* transition-colors duration-300 equivalent */
+    font-size: 0.875rem; /* text-sm equivalent */
+}
+
+.footer-section a:hover {
+    color: #ccc; /* hover:text-gray-300 equivalent */
+}
+
+.footer-copyright {
+    text-align: center; /* text-center equivalent */
+    font-size: 0.75rem; /* text-xs equivalent */
+    opacity: 0.7; /* opacity-70 equivalent */
+    margin-top: 2.5rem; /* mt-10 equivalent */
+    padding-top: 1.25rem; /* pt-5 equivalent */
+    border-top: 1px solid rgba(255, 255, 255, 0.2); /* border-t border-white/20 equivalent */
+}
+
+/* Hidden Utility Class (managed by JS) */
+.hidden {
+    display: none !important;
+}

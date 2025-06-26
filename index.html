@@ -20,6 +20,13 @@
   <div class="container">
     <div class="nav-bar">
       <h1>Look-book</h1>
+      <div>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#newsletter">News Letter</a></li>
+        </ul>
+      </div>
       <nav id="hamburger-nav">
         <div class="hamburger-menu">
           <div class="hamburger-icon" onclick="toggleMenu()">
@@ -27,10 +34,10 @@
             <span></span>
             <span></span>
           </div>
-          <div class="menu-links">
+          <div class="menu-links" id="menuLinks">
             <li><a href="#about" onclick="toggleMenu()">About</a></li>
             <li><a href="#products" onclick="toggleMenu()">Products</a></li>
-            <li><a href="#favorites" onclick="toggleMenu()">Favorites</a></li>
+            <li><a href="#newsletter" onclick="toggleMenu()">News Letter</a></li>
           </div>
         </div>
       </nav>
@@ -50,9 +57,14 @@
       </div>
     </div>
 
-    <p>
-      Hi there! Welcome to Look-book. Discover daily outfit inspirations from Business Chic to Vintage Streetwear. Click a look to like it and save it to favorites.
-    </p>
+    <div class="hero-section" id="about">
+      <img src="./Icons/hero-section-img.jpeg" alt="Hero Image" class="hero-image">
+      <div class="hero-text">
+        <p>
+          Hi there! Welcome to Look-book. Discover daily outfit inspirations from Business Chic to Vintage Street wear. Click a look to like it and save it to favorites.
+        </p>
+      </div>
+    </div>
 
     <div id="mainContent" class="main-content">
       <div class="control-panel">
@@ -72,7 +84,7 @@
         <p>Oops! Something went wrong while loading outfits. Please try again.</p>
       </div>
 
-      <div class="complementary-items-section">
+      <div class="complementary-items-section" id="products">
         <h2>Suggested Complementary Items</h2>
         <div>
           <button id="discoverItemsBtn">Discover More Items</button>
@@ -98,6 +110,32 @@
       Try it out yourself!
     </div>
 
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3>Join Our Newsletter</h3>
+          <p>Stay updated with the latest fashion trends</p>
+          <form id="newsletter" class="newsletter-form">
+            <input type="email" id="newsletterEmail" name="username" placeholder="Enter your email address" required>
+            <button type="submit">Subscribe</button>
+          </form>
+          <p id="newsletterMessage" class="newsletter-message hidden"></p>
+        </div>
+        <div class="footer-section">
+          <h3>Contact Us</h3>
+          <p>Riverside Drive, Nairobi</p>
+          <p>Phone: +254 728 864000</p>
+        </div>
+        <div class="footer-section">
+          <h3>Email Us</h3>
+          <p>Have a question or feedback?</p>
+          <a href="mailto:info@lookbook.com">wambuikibathi@lookbook.com</a>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2025 Look-book. All rights reserved.
+      </div>
+    </footer>
     <script src="./src/index.js"></script>
   </div>
 </body>

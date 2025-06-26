@@ -80,6 +80,7 @@ function createOutfitCard(item) {
       <img src="${item.avatar || 'https://placehold.co/400x300'}" alt="${item.name}" class="card-image">
       <button class="like-button" data-id="${item.id}">
         <img src="${heartSrc}" alt="like" class="heart-icon" />
+      </button>
       <div class="description-overlay">
         <p>${item.description || 'No description available.'}</p>
       </div>
@@ -88,6 +89,53 @@ function createOutfitCard(item) {
     <p class="card-style">Style: <span>${item.style}</span></p>
   `;
   return card;
+}
+
+function setupLikeButtons() {
+  const likeButtons = document.querySelectorAll('.like-button');
+
+  likeButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const outfitId = parseInt(button.getAttribute('data-id'));
+      const outfit = outfits.find(item => item.id === outfitId);
+
+      // Toggle the liked state
+      outfit.liked = !outfit.liked;
+
+      // Update the server
+      await fetch(`http://localhost:3000/outfits/${outfitId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ liked: outfit.liked })
+      });
+
+      // Re-render
+      renderOutfits(outfits);
+      renderFavorites();
+    });
+  });
+}
+
+function renderFavorites() {
+  const favorites = outfits.filter(item => item.liked);
+  const favoriteOutfitsContainer = document.getElementById('favoriteOutfitsContainer');
+  const noFavoritesMessage = document.getElementById('noFavoritesMessage');
+  const favoritesCount = document.getElementById('favoritesCount');
+
+  favoriteOutfitsContainer.innerHTML = '';
+
+  if (favorites.length === 0) {
+    noFavoritesMessage.classList.remove('hidden');
+  } else {
+    noFavoritesMessage.classList.add('hidden');
+  }
+
+  favoritesCount.textContent = favorites.length;
+
+  favorites.forEach(item => {
+    const card = createOutfitCard(item); // reuse card creator
+    favoriteOutfitsContainer.appendChild(card);
+  });
 }
 
 function createProductCard(item) {
@@ -145,13 +193,23 @@ function toggleBlur(id) {
 async function toggleLike(id) {
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
+
   outfit.liked = !outfit.liked;
   updateFavoritesCount();
 
   try {
     await patchOutfitLike(id, outfit.liked);
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
-    if (currentView === 'favorites') renderFavorites();
+
+    if (currentView === 'favorites') {
+      renderFavorites();
+    } else {
+      const heartIcon = document.querySelector(`.like-button[data-id="${id}"] .heart-icon`);
+    if (heartIcon) {
+      heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+    }
+    }
+    
   } catch {
     outfit.liked = !outfit.liked;
     updateFavoritesCount();
@@ -252,4 +310,32 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => switchView('favorites'));
   document.querySelector('#backToAllLooksBtn')?.addEventListener('click', () => switchView('all'));
   document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('newsletter');
+  const emailInput = document.getElementById('newsletterEmail');
+  const messageDisplay = document.getElementById('newsletterMessage');
+
+  if (!form || !emailInput || !messageDisplay) {
+    console.error("Newsletter form elements not found.");
+    return;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+
+    if (emailInput.checkValidity()) {
+      messageDisplay.textContent = `Thank you for subscribing, ${email}!`;
+      messageDisplay.style.color = '#d4edda';
+      emailInput.value = '';
+    } else {
+      messageDisplay.textContent = 'Please enter a valid email address.';
+      messageDisplay.style.color = '#f8d7da';
+    }
+
+    messageDisplay.classList.remove('hidden');
+    setTimeout(() => messageDisplay.classList.add('hidden'), 5000);
+  });
 });
