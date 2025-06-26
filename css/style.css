@@ -1,4 +1,3 @@
-/* General Body and Container Styles */
 body {
     font-family:Arial, Helvetica, sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -6,33 +5,32 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align to top */
+    align-items: flex-start;
     min-height: 100vh;
-    background-color: #fff; /* White background as requested */
-    color: #1f2937; /* Default text color (dark gray) */
+    background-color: #fff; 
+    color: #1f2937; 
 }
 
 .container {
     width: 100%;
-    max-width: 960px; /* max-w-4xl equivalent */
+    max-width: 960px; 
     margin: 20px auto;
-    padding: 24px; /* p-6 equivalent */
-    background-color: #FFFFFF; /* White background for the main content area */
-    border-radius: 8px; /* rounded-lg equivalent */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl equivalent */
-    box-sizing: border-box; /* Include padding in element's total width and height */
+    padding: 24px; 
+    background-color: #FFFFFF; 
+    border-radius: 8px; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+    box-sizing: border-box; 
 }
 
-/* Dark Mode Specific Styles (controlled by 'dark' class on <html> element) */
 html.dark body {
-    background-color: #1a202c; /* Dark background for body in dark mode */
-    color: #e2e8f0; /* Light text for body in dark mode */
-}
-html.dark .container {
-    background-color: #2d3748; /* Darker background for main container in dark mode */
+    background-color: #1a202c; 
     color: #e2e8f0;
 }
-html.dark .text-gray-700 { /* For welcome message */
+html.dark .container {
+    background-color: #2d3748; 
+    color: #e2e8f0;
+}
+html.dark .text-gray-700 { 
     color: #cbd5e0;
 }
 html.dark input,
@@ -45,7 +43,6 @@ html.dark input::placeholder {
     color: #a0aec0;
 }
 
-/* Navbar Styles */
 .nav-bar {
     display: flex;
     justify-content: space-between;
@@ -53,20 +50,20 @@ html.dark input::placeholder {
     padding-bottom: 16px;
     margin-bottom: 24px;
     border-bottom: 1px solid #e5e7eb;
-    background-color: #A0522D; /* Brown background as requested */
-    color: #fff; /* White text as requested */
+    background-color: #a0522d; 
+    color: #fff; 
     font-weight: bold;
-    padding: 15px 20px; /* Padding for the nav bar */
-    border-radius: 8px 8px 0 0; /* Rounded top corners */
+    padding: 15px 20px; 
+    border-radius: 8px 8px 0 0; 
 }
 html.dark .nav-bar {
-    background-color: #6F4E37; /* Slightly darker brown for dark mode nav */
-    border-color: #4a5568; /* Dark mode border */
+    background-color: #6F4E37; 
+    border-color: #4a5568; 
 }
 
 .nav-bar h1 {
     font-size: 2.25rem;
-    color: #fff; /* Ensure white text for h1 in nav bar */
+    color: #fff; 
 }
 
 .nav-links {
@@ -99,24 +96,24 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #C07C4A; /* A lighter brown for buttons */
+    background-color: #C07C4A; 
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: background-color 0.3s ease, transform 0.3s ease;
-    border: none; /* Remove default button border */
+    border: none; 
     cursor: pointer;
 }
 .nav-bar-icons button:hover {
-    background-color: #A0522D; /* Darker brown on hover */
+    background-color: #a0522d; 
     transform: translateY(-2px);
 }
 html.dark .nav-bar-icons button {
-    background-color: #5A3F2F; /* Dark mode button background */
+    background-color: #5A3F2F;
 }
 html.dark .nav-bar-icons button:hover {
-    background-color: #6F4E37; /* Darker dark mode button hover */
+    background-color: #6F4E37; 
 }
 
 .icon {
@@ -126,12 +123,10 @@ html.dark .nav-bar-icons button:hover {
     vertical-align: middle;
 }
 
-/* Optional: invert image icons in dark mode */
 html.dark .icon {
     filter: invert(1);
   }
   
-/* === HEART (LIKE) ICON STYLES === */
 .heart-icon {
     width: 20px;
     height: 20px;
@@ -144,37 +139,61 @@ html.dark .icon {
     transform: scale(1.1);
 }
 
-/* Ensure light mode icon is visible on light button background */
 html:not(.dark) #theme-toggle-light-icon {
     fill: #5C4033;
 }
-/* Ensure the favorites icon image is styled if using img tag */
+
 #favoritesIcon {
     width: 20px;
     height: 20px;
     margin-right: 4px;
     fill: currentColor;
-    /* For img tags, filter may be needed for color inversion in dark mode */
-    /* Example: html.dark #favoritesIcon { filter: invert(1); } */
 }
 
-.heart-icon {
-    width: 20px;
-    height: 20px;
-    fill: crimson;
-    cursor: pointer;
-    transition: transform 0.2s;
+.menu-links {
+    list-style: none;
+    position: absolute;
+    top: 60px; 
+    left: 0;
+    background-color: #fff; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    max-height: 0; 
+    transition: max-height 0.3s ease-in-out;
+    z-index: 100;
+    width: 180px; 
+}
+html {
+    scroll-behavior: smooth;
+}
+html.dark .menu-links {
+    background-color: #2d3748; 
+}
+.menu-links.open {
+    max-height: 200px; 
+}
+.menu-links li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #5C4033; 
+    transition: background-color 0.2s ease;
+}
+html.dark .menu-links li a {
+    color: #e2e8f0; 
+}
+.menu-links li a:hover {
+    background-color: #F0F0D0; 
+}
+html.dark .menu-links li a:hover {
+    background-color: #4a5568; 
 }
 
-.heart-icon:hover {
-    transform: scale(1.1);
-}
-
-/* Hamburger Menu Styles */
 .hamburger-menu {
-    display: none; /* Hidden by default on larger screens */
+    display: none; 
     position: relative;
-    z-index: 200; /* Ensure it's above other content when open */
+    z-index: 200; 
 }
 .hamburger-icon {
     cursor: pointer;
@@ -188,12 +207,12 @@ html:not(.dark) #theme-toggle-light-icon {
     display: block;
     width: 100%;
     height: 3px;
-    background-color: #fff; /* White for hamburger lines in brown nav bar */
+    background-color: #fff; 
     border-radius: 2px;
     transition: all 0.3s ease-in-out;
 }
 html.dark .hamburger-icon span {
-    background-color: #e2e8f0; /* Light color for lines in dark mode nav */
+    background-color: #e2e8f0; 
 }
 .hamburger-icon.open span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
@@ -203,46 +222,6 @@ html.dark .hamburger-icon span {
 }
 .hamburger-icon.open span:nth-child(3) {
     transform: rotate(-45deg) translate(5px, -5px);
-}
-
-.menu-links {
-    list-style: none;
-    position: absolute;
-    top: 60px; /* Adjust based on navbar height */
-    left: 0;
-    background-color: #fff; /* Default background for dropdown */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 5px;
-    overflow: hidden;
-    max-height: 0; /* Initially hidden */
-    transition: max-height 0.3s ease-in-out;
-    z-index: 100;
-    width: 180px; /* Adjust width as needed */
-}
-html {
-    scroll-behavior: smooth;
-}
-html.dark .menu-links {
-    background-color: #2d3748; /* Dark mode background for dropdown */
-}
-.menu-links.open {
-    max-height: 200px; /* Adjust based on content to make it visible */
-}
-.menu-links li a {
-    display: block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: #5C4033; /* Dark brown text for menu links */
-    transition: background-color 0.2s ease;
-}
-html.dark .menu-links li a {
-    color: #e2e8f0; /* Light text for menu links in dark mode */
-}
-.menu-links li a:hover {
-    background-color: #F0F0D0; /* Lighter cream on hover */
-}
-html.dark .menu-links li a:hover {
-    background-color: #4a5568; /* Darker hover for dark mode */
 }
 
 .hero-section {
@@ -270,7 +249,7 @@ html.dark .menu-links li a:hover {
     color: #5C4033;
     font-size: 1.5rem;
     max-width: 50%;
-    background-color: white; /* optional: darken behind text */
+    background-color: white; 
     padding: 1rem 1.5rem;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgb(0, 0, 0, 0.1);
@@ -280,75 +259,67 @@ html.dark .hero-text {
     background-color: #333;
     color: #fff;
 }
-/* Control Panel (Search and Filter) */
+
 .control-panel {
     display: flex;
-    flex-direction: column; /* Default for mobile */
+    flex-direction: column; 
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
     gap: 16px;
 }
-@media (min-width: 640px) { /* Small breakpoint for larger screens */
+@media (min-width: 640px) { 
     .control-panel {
         flex-direction: row;
     }
 }
-@media (max-width: 639px) { /* Max-width for mobile view */
-    /* ... existing styles for .nav-bar, .nav-bar h1, etc. ... */
-
-    .nav-links { /* ADD THIS BLOCK */
-        display: none; /* Hides the main horizontal nav links on small screens */
+@media (max-width: 639px) { 
+    .nav-links {
+        display: none; 
     }
-
     /* ... rest of your mobile styles ... */
 }
 
 .control-panel input,
 .control-panel select {
     flex-grow: 1;
-    width: 100%; /* Full width on mobile */
+    width: 100%; 
     padding: 8px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box; /* Ensures padding is included in element's total width */
+    box-sizing: border-box; 
 }
 .control-panel input:focus,
 .control-panel select:focus {
-    border-color: #A0522D; /* Brown border on focus */
-    box-shadow: 0 0 0 2px rgba(160, 82, 45, 0.5); /* Brown shadow on focus */
+    border-color: #a0522d; 
+    box-shadow: 0 0 0 2px rgba(160, 82, 45, 0.5); 
 }
-
-
-  
-  
-/* Card Grid Layouts */
+ 
 .outfits-grid, .complementary-items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
     gap: 24px;
 }
-@media (min-width: 768px) { /* Medium breakpoint */
+@media (min-width: 768px) { 
     .outfits-grid, .complementary-items-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
-@media (min-width: 1024px) { /* Large breakpoint */
+@media (min-width: 1024px) { 
     .outfits-grid, .complementary-items-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Generic Card Styling */
 .card {
-    background-color: #FFFDD0; /* Cream background as requested */
+    background-color: #FFFDD0;
     padding: 24px;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #D2B48C; /* Light brown border for cards */
+    border: 1px solid #D2B48C; 
     position: relative;
     box-sizing: border-box;
 }
@@ -357,11 +328,10 @@ html.dark .hero-text {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 html.dark .card {
-    background-color: #36281D; /* Darker cream/brown for dark mode cards */
-    border-color: #6F4E37; /* Dark mode border */
+    background-color: #36281D; 
+    border-color: #6F4E37; 
 }
 
-/* Outfit Card Specific Styles (for blur and like button) */
 .outfit-card {
     cursor: pointer;
     overflow: hidden;
@@ -374,14 +344,14 @@ html.dark .card {
 }
 .card-image {
     width: 100%;
-    height: 192px;
+    height: 450px;
     object-fit: cover;
     transition: filter 0.3s ease-in-out;
     border-radius: 6px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 .outfit-card.blurred .card-image {
-    filter: blur(8px); /* Blur effect */
+    filter: blur(8px); 
 }
 .description-overlay {
     position: absolute;
@@ -411,23 +381,22 @@ html.dark .card {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #5C4033; /* Dark brown for card titles */
+    color: #5C4033; 
 }
 html.dark .card-title {
-    color: #F8F8E0; /* Lighter text for dark mode card titles */
+    color: #F8F8E0;
 }
 .card-style {
-    color: #6b7280; /* Gray for style text */
+    color: #6b7280; 
     font-size: 0.75rem;
 }
 html.dark .card-style {
-    color: #A0A0A0; /* Lighter gray in dark mode */
+    color: #A0A0A0; 
 }
 .card-style span {
     font-weight: 500;
 }
 
-/* Like Button */
 .like-button {
     position: absolute;
     top: 16px;
@@ -456,17 +425,17 @@ html.dark .like-button:hover {
 .like-button svg {
     width: 24px;
     height: 24px;
-    fill: #A0522D; /* Default brown heart */
+    fill: #a0522d; 
     transition: fill 0.2s ease;
 }
 .like-button.liked svg {
-    fill: #EF4444; /* Red heart when liked */
+    fill: #EF4444; 
 }
 
-/* Product Card Specific Styles (for complementary items) */
 .product-card .product-image {
     width: 100%;
-    height: 192px;
+    aspect-ratio: 1 / 1; 
+    height: auto;
     object-fit: contain;
     border-radius: 6px;
     margin-bottom: 16px;
@@ -476,54 +445,51 @@ html.dark .like-button:hover {
     font-size: 1.125rem;
     font-weight: 600;
     margin-bottom: 4px;
-    color: #5C4033; /* Dark brown for product titles */
+    color: #5C4033; 
 }
 html.dark .product-card .product-title {
-    color: #F8F8E0; /* Lighter text for dark mode product titles */
+    color: #F8F8E0; 
 }
 .product-card .product-price {
-    color: #5C4033; /* Dark brown for product price */
+    color: #5C4033; 
     font-size: 0.875rem;
     margin-bottom: 8px;
 }
 html.dark .product-card .product-price {
-    color: #A0A0A0; /* Lighter gray in dark mode */
+    color: #A0A0A0; 
 }
 .product-card .product-category {
     color: #6b7280;
     font-size: 0.75rem;
 }
 html.dark .product-card .product-category {
-    color: #A0A0A0; /* Lighter gray in dark mode */
+    color: #A0A0A0; 
 }
 
-
-/* Sections and Buttons */
-.main-content, .favorites-section {
+.main-content {
     padding-top: 32px;
     border-top: 1px solid #e5e7eb;
     margin-top: 48px;
 }
-html.dark .main-content, html.dark .favorites-section {
+html.dark .main-content {
     border-color: #4a5568;
 }
 
-.main-content h2, .favorites-section h2 {
+.main-content h2 {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 24px;
     text-align: center;
-    color: #A0522D; /* Brown for section headers */
+    color: #a0522d; 
 }
-html.dark .main-content h2, html.dark .favorites-section h2 {
-    color: #D2B48C; /* Lighter brown in dark mode */
+html.dark .main-content h2 {
+    color: #D2B48C;
 }
 
-.main-content button#discoverItemsBtn,
-.favorites-section button#backToAllLooksBtn {
+.main-content button#discoverItemsBtn {
     display: block;
     margin: 32px auto;
-    background-color: #A0522D; /* Brown button */
+    background-color: #a0522d; 
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
@@ -532,22 +498,91 @@ html.dark .main-content h2, html.dark .favorites-section h2 {
     border: none;
     cursor: pointer;
 }
-.main-content button#discoverItemsBtn:hover,
-.favorites-section button#backToAllLooksBtn:hover {
-    background-color: #8B4513; /* Darker brown on hover */
+.main-content button#discoverItemsBtn:hover {
+    background-color: #8B4513; 
     transform: translateY(-2px);
 }
-html.dark .main-content button#discoverItemsBtn,
-html.dark .favorites-section button#backToAllLooksBtn {
-    background-color: #6F4E37; /* Dark mode button */
+html.dark .main-content button#discoverItemsBtn {
+    background-color: #6F4E37; 
 }
-html.dark .main-content button#discoverItemsBtn:hover,
-html.dark .favorites-section button#backToAllLooksBtn:hover {
-    background-color: #5A3F2F; /* Darker dark mode button hover */
+html.dark .main-content button#discoverItemsBtn:hover {
+    background-color: #5A3F2F;
 }
 
+.favorites-section {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
 
-/* Loading and Error Indicators */
+.favorites-section.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.no-favorites-message.hidden {
+    display: none;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding-top: 1rem;
+}
+html.dark .favorites-grid {
+    background-color: #2d3748; 
+}
+
+#favoritesCount {
+    font-weight: bold;
+    color: #fff;
+}
+html.dark #favoritesCount {
+    color: #e2e8f0;
+}
+
+#noFavoritesMessage p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #5C4033; 
+    margin: 16px auto;
+    max-width: 700px; 
+    text-align: center;
+}
+
+html.dark #noFavoritesMessage p {
+    color: #E2E8F0; 
+}
+
+#backToAllLooksBtn {
+    display: block;
+    margin: 32px auto;
+    background-color: #8B4513;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+#backToAllLooksBtn:hover {
+    background-color: #a0522d;
+    transform: translateY(-2px);
+}
+
+html.dark #backToAllLooksBtn {
+    background-color: #5A3F2F;
+    color: #f5f5f5;
+}
+
+html.dark #backToAllLooksBtn:hover {
+    background-color: #6F4E37;
+}
+
 .loader-indicator, .error-message, .no-favorites-message {
     text-align: center;
     padding: 16px 0;
@@ -556,45 +591,41 @@ html.dark .favorites-section button#backToAllLooksBtn:hover {
     display: inline-block;
     width: 32px;
     height: 32px;
-    border: 3px solid #A0522D; /* Brown spinner */
+    border: 3px solid #a0522d; 
     border-bottom-color: transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 html.dark .loader-indicator div {
-    border-color: #D2B48C; /* Lighter brown spinner in dark mode */
+    border-color: #d2b48c; 
     border-bottom-color: transparent;
 }
 .loader-indicator p {
     margin-top: 8px;
-    color: #5C4033; /* Dark brown for loading text */
+    color: #5C4033;
 }
 html.dark .loader-indicator p {
-    color: #E2E8F0; /* Light text in dark mode */
+    color: #e2e8f0; 
 }
 .error-message p {
-    color: #dc2626; /* Red for error messages */
+    color: #dc2626; 
 }
 .no-favorites-message {
-    color: #6b7280; /* Gray for no favorites message */
+    color: #6b7280; 
 }
 html.dark .no-favorites-message {
-    color: #A0A0A0; /* Lighter gray in dark mode */
+    color: #A0A0A0;
 }
 
-
-/* Spinner Animation */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* Hidden Utility Class (managed by JS) */
 .hidden {
     display: none !important;
 }
 
-/* Toast Notification Styles */
 .toast-notification {
     position: fixed;
     bottom: 20px;
@@ -617,45 +648,43 @@ html.dark .no-favorites-message {
     visibility: visible;
 }
 
-
-/* Media queries for responsiveness of navbar */
-@media (max-width: 639px) { /* Max-width for mobile view */
+@media (max-width: 639px) { 
     .nav-bar {
         flex-direction: column;
-        align-items: flex-start; /* Align items to start for stacking */
+        align-items: flex-start; 
         padding-left: 0;
         padding-right: 0;
-        border-radius: 0; /* No rounded corners for full width on mobile */
+        border-radius: 0; 
     }
     .nav-bar h1 {
         margin-bottom: 16px;
         text-align: center;
-        width: 100%; /* Take full width */
+        width: 100%; 
     }
     .nav-bar-icons {
         margin-top: 16px;
-        width: 100%; /* Take full width */
-        justify-content: center; /* Center buttons */
+        width: 100%; 
+        justify-content: center; 
     }
     .nav-bar-icons button {
-        width: 48%; /* Adjust button width to fit two per row */
-        font-size: 0.9rem; /* Slightly smaller font */
-        padding: 6px 12px; /* Smaller padding */
+        width: 48%; 
+        font-size: 0.9rem; 
+        padding: 6px 12px;
     }
     .hamburger-menu {
-        display: block; /* Show hamburger on small screens */
-        order: -1; /* Place it at the beginning */
+        display: block; 
+        order: -1; 
         margin-bottom: 16px;
-        padding-left: 16px; /* Align with content */
+        padding-left: 16px; 
     }
     .menu-links {
-        position: static; /* Position within normal flow */
-        width: 100%; /* Take full width */
-        box-shadow: none; /* No shadow for static menu */
+        position: static; 
+        width: 100%; 
+        box-shadow: none; 
         text-align: center;
-        background-color: transparent; /* Transparent background */
+        background-color: transparent; 
         border-radius: 0;
-        max-height: 0; /* Hidden by default */
+        max-height: 0; 
         overflow: hidden;
         transition: max-height 0.3s ease-in-out;
     }
@@ -663,27 +692,26 @@ html.dark .no-favorites-message {
         background-color: transparent;
     }
     .menu-links.open {
-        max-height: 200px; /* Adjust as needed to show links */
+        max-height: 200px; 
     }
     .menu-links li a {
-        padding: 12px 0; /* Adjust padding for links */
+        padding: 12px 0; 
     }
 
-    /* Adjust control panel for mobile */
     .control-panel {
         flex-direction: column;
-        align-items: stretch; /* Stretch items to fill width */
+        align-items: stretch;
     }
 }
 
 .footer {
-    margin-top: 3rem; /* mt-12 equivalent */
-    padding: 2.5rem 1.5rem; /* py-10 px-6 equivalent */
-    background-color: #A0522D; /* bg-A0522D equivalent */
-    color: #fff; /* text-white equivalent */
-    border-top-left-radius: 0.5rem; /* rounded-t-lg equivalent */
-    border-top-right-radius: 0.5rem; /* rounded-t-lg equivalent */
-    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); /* shadow-inner equivalent, approximating */
+    margin-top: 3rem; 
+    padding: 2.5rem 1.5rem;
+    background-color: #a0522d; 
+    color: #fff; 
+    border-top-left-radius: 0.5rem; 
+    border-top-right-radius: 0.5rem; 
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); 
 }
 
 html.dark .footer {
@@ -691,15 +719,15 @@ html.dark .footer {
 }
 
 .footer-container {
-    max-width: 960px; /* container mx-auto equivalent */
+    max-width: 960px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
-    flex-direction: column; /* flex-col equivalent */
+    flex-direction: column; 
     justify-content: space-around;
-    align-items: center; /* items-center equivalent */
-    gap: 2rem; /* gap-8 equivalent */
-    text-align: center; /* text-center equivalent */
+    align-items: center; 
+    gap: 2rem; 
+    text-align: center; 
 }
 
 @media (min-width: 768px) {
@@ -721,86 +749,85 @@ html.dark .footer {
 }
 
 .footer-section h3 {
-    font-weight: bold; /* font-bold equivalent */
-    font-size: 1.5rem; /* text-2xl equivalent (adjust if 2xl means 2rem in your setup) */
-    margin-bottom: 1rem; /* mb-4 equivalent */
+    font-weight: bold; 
+    font-size: 1.5rem; 
+    margin-bottom: 1rem; 
 }
 
 .footer-section p {
-    font-size: 0.875rem; /* text-sm equivalent */
-    margin-bottom: 1rem; /* mb-4 equivalent */
-    opacity: 0.8; /* opacity-80 equivalent */
-    line-height: 1.5; /* Added for readability */
+    font-size: 0.875rem; 
+    margin-bottom: 1rem;
+    opacity: 0.8; 
+    line-height: 1.5; 
 }
 
 .newsletter-form {
     display: flex;
-    flex-direction: column; /* flex-col equivalent */
-    gap: 0.75rem; /* gap-3 equivalent */
+    flex-direction: column; 
+    gap: 0.75rem; 
 }
 
 .newsletter-form input[type="email"] {
-    padding: 0.75rem; /* p-3 equivalent */
-    border-radius: 0.5rem; /* rounded-lg equivalent */
-    border: 2px solid rgba(255, 255, 255, 0.3); /* border-2 border-white/30 equivalent */
-    background-color: rgba(255, 255, 255, 0.1); /* bg-white/10 equivalent */
-    color: #fff; /* text-white equivalent */
-    outline: none; /* focus:outline-none equivalent */
-    transition: border-color 0.3s ease; /* transition-colors duration-300 equivalent */
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+    border: 2px solid rgba(255, 255, 255, 0.3); 
+    background-color: rgba(255, 255, 255, 0.1); 
+    color: #fff; 
+    outline: none; 
+    transition: border-color 0.3s ease; 
 }
 
 .newsletter-form input[type="email"]::placeholder {
-    color: rgba(255, 255, 255, 0.7); /* placeholder-white/70 equivalent */
+    color: rgba(255, 255, 255, 0.7); 
 }
 
 .newsletter-form input[type="email"]:focus {
-    border-color: rgba(255, 255, 255, 0.7); /* focus:border-white/70 equivalent */
+    border-color: rgba(255, 255, 255, 0.7);
 }
 
 .newsletter-form button {
-    background-color: #C07C4A; /* bg-C07C4A equivalent */
+    background-color: #c07c4a; 
     color: white;
-    font-weight: 600; /* font-semibold equivalent */
-    padding: 0.75rem 1.5rem; /* py-3 px-6 equivalent */
-    border-radius: 0.5rem; /* rounded-lg equivalent */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md equivalent */
-    transition: background-color 0.3s ease; /* hover:bg-A0522D transition-colors duration-300 equivalent */
+    font-weight: 600; 
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+    transition: background-color 0.3s ease; 
     border: none;
     cursor: pointer;
 }
 
 .newsletter-form button:hover {
-    background-color: #A0522D; /* hover:bg-A0522D equivalent */
+    background-color: #a0522d; 
 }
 
 .newsletter-message {
-    margin-top: 0.75rem; /* mt-3 equivalent */
-    font-size: 0.875rem; /* text-sm equivalent */
-    opacity: 0.9; /* opacity-90 equivalent */
+    margin-top: 0.75rem; 
+    font-size: 0.875rem; 
+    opacity: 0.9; 
 }
 
 .footer-section a {
-    color: #fff; /* text-white equivalent */
-    text-decoration: underline; /* underline equivalent */
-    text-underline-offset: 0.25rem; /* underline-offset-4 equivalent */
-    transition: color 0.3s ease; /* transition-colors duration-300 equivalent */
-    font-size: 0.875rem; /* text-sm equivalent */
+    color: #fff; 
+    text-decoration: underline; 
+    text-underline-offset: 0.25rem; 
+    transition: color 0.3s ease; 
+    font-size: 0.875rem;
 }
 
 .footer-section a:hover {
-    color: #ccc; /* hover:text-gray-300 equivalent */
+    color: #ccc; 
 }
 
 .footer-copyright {
-    text-align: center; /* text-center equivalent */
-    font-size: 0.75rem; /* text-xs equivalent */
-    opacity: 0.7; /* opacity-70 equivalent */
-    margin-top: 2.5rem; /* mt-10 equivalent */
-    padding-top: 1.25rem; /* pt-5 equivalent */
-    border-top: 1px solid rgba(255, 255, 255, 0.2); /* border-t border-white/20 equivalent */
+    text-align: center;
+    font-size: 0.75rem; 
+    opacity: 0.7; 
+    margin-top: 2.5rem; 
+    padding-top: 1.25rem; 
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Hidden Utility Class (managed by JS) */
 .hidden {
     display: none !important;
 }

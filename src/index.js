@@ -1,11 +1,8 @@
-// utils.js
-// Replaced $ and $$ with full document.querySelector and querySelectorAll
-
-// state.js
+//statement.js
 let allOutfits = [];
 let currentView = 'all';
 
-// api.js
+//APIs js
 const LOCAL_API_URL = 'http://localhost:3000/outfits';
 const EXTERNAL_API_URL = 'https://fakestoreapi.com/products?limit=6';
 
@@ -33,7 +30,7 @@ async function fetchComplementaryItems() {
   return data;
 }
 
-// dom.js
+//DOM js
 function resetSearchAndFilters() {
   document.querySelector('#searchOutfits').value = '';
   document.querySelector('#styleFilter').value = '';
@@ -75,6 +72,7 @@ function createOutfitCard(item) {
 
   card.className = `card outfit-card${item.isBlurred ? ' blurred' : ''}`;
   card.dataset.id = item.id;
+
   card.innerHTML = `
     <div class="card-image-wrapper">
       <img src="${item.avatar || 'https://placehold.co/400x300'}" alt="${item.name}" class="card-image">
@@ -88,55 +86,93 @@ function createOutfitCard(item) {
     <h3 class="card-title">${item.name}</h3>
     <p class="card-style">Style: <span>${item.style}</span></p>
   `;
+  
   return card;
 }
 
-function setupLikeButtons() {
-  const likeButtons = document.querySelectorAll('.like-button');
+function setupLikeButtons(scope = document) {
+  const likeButtons = scope.querySelectorAll('.like-button');
 
   likeButtons.forEach(button => {
-    button.addEventListener('click', async () => {
+    button.addEventListener('click', async (e) => {
+      e.stopPropagation(); // prevent bubbling if needed
       const outfitId = parseInt(button.getAttribute('data-id'));
-      const outfit = outfits.find(item => item.id === outfitId);
+      const outfit = allOutfits.find(item => item.id === outfitId);
 
-      // Toggle the liked state
+      if (!outfit) return;
+
+      // Toggle liked
       outfit.liked = !outfit.liked;
 
-      // Update the server
+      // Update server
       await fetch(`http://localhost:3000/outfits/${outfitId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ liked: outfit.liked })
       });
 
-      // Re-render
-      renderOutfits(outfits);
-      renderFavorites();
+      // Update the heart icon only
+      const heartImg = button.querySelector('img.heart-icon');
+      heartImg.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+
+      // If you're on the favorites page and unliking, remove the card from DOM
+      if (document.body.contains(document.querySelector('#favoritesContainer')) && !outfit.liked) {
+        const card = button.closest('.card');
+        card.remove();
+
+        // Show no favorites message if none left
+        const remainingFavorites = allOutfits.filter(o => o.liked);
+        if (remainingFavorites.length === 0) {
+          document.querySelector('#noFavoritesMessage').classList.remove('hidden');
+        }
+      }
     });
   });
 }
 
-function renderFavorites() {
-  const favorites = outfits.filter(item => item.liked);
-  const favoriteOutfitsContainer = document.getElementById('favoriteOutfitsContainer');
-  const noFavoritesMessage = document.getElementById('noFavoritesMessage');
+
+function addFavorite(outfit) {
+  const favoritesGrid = document.querySelector('.favorites-grid');
+  const noFavoritesMessage = document.querySelector('.no-favorites-message');
   const favoritesCount = document.getElementById('favoritesCount');
 
-  favoriteOutfitsContainer.innerHTML = '';
+  // Update data
+  favorites.push(outfit);
 
-  if (favorites.length === 0) {
-    noFavoritesMessage.classList.remove('hidden');
-  } else {
-    noFavoritesMessage.classList.add('hidden');
-  }
-
+  // Update count
   favoritesCount.textContent = favorites.length;
 
-  favorites.forEach(item => {
-    const card = createOutfitCard(item); // reuse card creator
-    favoriteOutfitsContainer.appendChild(card);
-  });
+  // Hide empty message
+  noFavoritesMessage.classList.add('hidden');
+
+  // Add new card only
+  const newCard = createOutfitCard(outfit);
+  favoritesGrid.appendChild(newCard);
 }
+
+function removeFavorite(outfitId) {
+  const favoritesGrid = document.querySelector('.favorites-grid');
+  const favoritesCount = document.getElementById('favoritesCount');
+  const noFavoritesMessage = document.querySelector('.no-favorites-message');
+
+  // Remove from data
+  favorites = favorites.filter(item => item.id !== outfitId);
+
+  // Remove card from DOM
+  const cardToRemove = favoritesGrid.querySelector(`[data-id="${outfitId}"]`);
+  if (cardToRemove) {
+    favoritesGrid.removeChild(cardToRemove);
+  }
+
+  // Update count
+  favoritesCount.textContent = favorites.length;
+
+  // Show empty message if no favorites left
+  if (favorites.length === 0) {
+    noFavoritesMessage.classList.remove('hidden');
+  }
+}
+
 
 function createProductCard(item) {
   const card = document.createElement('div');
@@ -176,6 +212,7 @@ function bindOutfitEvents(container) {
     };
     const likeBtn = card.querySelector('.like-button');
     likeBtn.onclick = e => {
+      e.preventDefault();
       e.stopPropagation();
       toggleLike(likeBtn.dataset.id);
     };
@@ -201,17 +238,29 @@ async function toggleLike(id) {
     await patchOutfitLike(id, outfit.liked);
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
 
-    if (currentView === 'favorites') {
-      renderFavorites();
-    } else {
-      const heartIcon = document.querySelector(`.like-button[data-id="${id}"] .heart-icon`);
+    // Update heart icon
+    const heartIcon = document.querySelector(`.like-button[data-id="${id}"] .heart-icon`);
     if (heartIcon) {
       heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
     }
+
+    // Add or remove from favorites container
+    const favContainer = document.querySelector('#favoritesContainer');
+    const existingCard = favContainer.querySelector(`.outfit-card[data-id="${id}"]`);
+
+    if (outfit.liked && !existingCard) {
+      const card = createOutfitCard(outfit);
+      favContainer.appendChild(card);
+    } else if (!outfit.liked && existingCard) {
+      favContainer.removeChild(existingCard);
     }
-    
+
+    // Show/hide no-favorites message
+    const favCount = allOutfits.filter(o => o.liked).length;
+    document.querySelector('#noFavoritesMessage').classList.toggle('hidden', favCount > 0);
+
   } catch {
-    outfit.liked = !outfit.liked;
+    outfit.liked = !outfit.liked; // Rollback
     updateFavoritesCount();
     showToast('Failed to update like status');
   }
@@ -239,19 +288,20 @@ function filterAndRenderOutfits() {
   renderCards(filtered, currentView === 'all' ? document.querySelector('#outfitsContainer') : document.querySelector('#favoriteOutfitsContainer'));
 }
 
-function switchView(view) {
-  currentView = view;
-  document.querySelector('#mainContent').classList.toggle('hidden', view !== 'all');
-  document.querySelector('#favoritesSection').classList.toggle('hidden', view === 'all');
-  resetSearchAndFilters();
-  view === 'all' ? filterAndRenderOutfits() : renderFavorites();
-  if (document.querySelector('.menu-links').classList.contains('open')) toggleMenu();
-}
-
 function renderFavorites() {
-  const liked = allOutfits.filter(o => o.liked);
-  renderCards(liked, document.querySelector('#favoriteOutfitsContainer'));
-  document.querySelector('#noFavoritesMessage').classList.toggle('hidden', liked.length > 0);
+  const favorites = allOutfits.filter(o => o.liked);
+  const container = document.querySelector('#favoritesContainer');
+  container.innerHTML = '';
+
+  if (favorites.length === 0) {
+    document.querySelector('#noFavoritesMessage').classList.remove('hidden');
+  } else {
+    document.querySelector('#noFavoritesMessage').classList.add('hidden');
+    favorites.forEach(item => container.appendChild(createOutfitCard(item)));
+  }
+
+  // Set up like buttons for newly rendered cards
+  setupLikeButtons(container); 
 }
 
 async function loadComplementaryItems() {
@@ -288,6 +338,7 @@ async function initializeApp() {
     allOutfits = await fetchOutfits();
     populateStyleFilter(allOutfits);
     renderCards(allOutfits, document.querySelector('#outfitsContainer'));
+    renderFavorites();
     updateFavoritesCount();
   } catch (err) {
     document.querySelector('#errorMessage').classList.remove('hidden');
@@ -301,14 +352,19 @@ async function initializeApp() {
   }
 }
 
-// Event Listeners
+// More Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
   document.querySelector('#darkModeToggle')?.addEventListener('click', toggleTheme);
   document.querySelector('#searchOutfits')?.addEventListener('input', filterAndRenderOutfits);
   document.querySelector('#styleFilter')?.addEventListener('change', filterAndRenderOutfits);
-  document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => switchView('favorites'));
-  document.querySelector('#backToAllLooksBtn')?.addEventListener('click', () => switchView('all'));
+  document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => {
+    const favoritesSection = document.querySelector('#favoritesContainer');
+    if (favoritesSection) {
+      favoritesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
   document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
 });
 

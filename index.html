@@ -43,14 +43,11 @@
       </nav>
 
       <div class="nav-bar-icons">
-        <!-- 🌙 Light/Dark Mode Toggle -->
-        <button id="darkModeToggle">
+        <button id="darkModeToggle" type="button">
           <img id="theme-toggle-dark-icon" src="./Icons/moon.png" class="icon" alt="Dark Mode Icon" />
           <img id="theme-toggle-light-icon" src="./Icons/sun.png" class="icon" alt="Light Mode Icon" />
         </button>
-
-        <!-- ❤️ Favorites Button -->
-        <button id="viewFavoritesBtn">
+        <button id="viewFavoritesBtn" type="button">
           <img id="favoritesIcon" src="./Icons/heart.png" class="icon" alt="Favorites Icon" />
           View Favorites (<span id="favoritesCount">0</span>)
         </button>
@@ -80,6 +77,15 @@
 
       <div id="outfitsContainer" class="outfits-grid"></div>
 
+       <div id="favoritesSection">
+        <h2>Your Favorites</h2>
+        <div id="favoritesContainer" class="favorites-grid"></div>
+        <div id="noFavoritesMessage" class="hidden">
+          <p>You haven't liked any outfits yet.</p>
+        </div>
+        <button id="backToAllLooksBtn">Back to All Looks</button>
+      </div>
+
       <div id="errorMessage" class="hidden">
         <p>Oops! Something went wrong while loading outfits. Please try again.</p>
       </div>
@@ -98,18 +104,7 @@
         </div>
       </div>
     </div>
-
-    <div id="favoritesSection" class="favorites-section hidden">
-      <h2>My Favorite Looks</h2>
-      <div id="favoriteOutfitsContainer" class="outfits-grid"></div>
-      <p id="noFavoritesMessage" class="no-favorites-message hidden">You haven't liked any outfits yet. Start exploring!</p>
-      <button id="backToAllLooksBtn">Back to All Looks</button>
-    </div>
-
-    <div id="toastNotification" class="toast-notification hidden">
-      Try it out yourself!
-    </div>
-
+    
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-section">
@@ -136,7 +131,12 @@
         &copy; 2025 Look-book. All rights reserved.
       </div>
     </footer>
-    <script src="./src/index.js"></script>
+
+    <div id="toastNotification" class="toast-notification hidden">
+      Try it out yourself!
+    </div>
+
+    <script src="./src/index.js" defer></script>
   </div>
 </body>
 </html>
