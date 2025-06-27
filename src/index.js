@@ -4,7 +4,7 @@ let currentView = 'all';
 
 // APIs js
 const LOCAL_API_URL = 'http://localhost:3000/outfits';
-const EXTERNAL_API_URL = 'https://fakestoreapi.com/products?limit=6';
+const EXTERNAL_API_URL = 'https://fakestoreapi.com/products/?limit=6';
 
 async function fetchOutfits() {
   const response = await fetch(LOCAL_API_URL);
