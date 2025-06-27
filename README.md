@@ -1,5 +1,5 @@
 ## Look-book
-Look-book is a dynamic web application designed to showcase various fashion outfits. Users can browse a curated collection of looks, filter them by style category, mark their favorite outfits, and explore complementary items for each look. The application features a clean, responsive design with a dark mode toggle and a newsletter subscription.
+Look-book is a simple web application designed to showcase various fashion outfits. Users can browse a curated collection of looks, filter them by style category, mark their favorite outfits, and explore complementary items for each look. The application features a clean, responsive design with a dark mode toggle and a newsletter subscription.
 
 # Features
 1. Outfit Display: Browse a collection of various fashion outfits.
@@ -110,3 +110,36 @@ json-server --watch db.json --port 3000
 ```
 This will start the API server at http://localhost:3000. Your application expects outfit data to be available at http://localhost:3000/outfits.
 
+# Run the Application
+- Open the index.html file in your web browser. You can usually do this by double-clicking the file or by navigating to its path in your browser (e.g., file:///path/to/your/project/index.html).
+- Alternatively, if you have a live server extension (like Live Server for VS Code), you can use that for easier development.
+
+# Usage
+1. Once the application is running:
+
+2. Browse Outfits: The main page displays all available outfits.
+
+3. Filter Outfits: Use the "Filter by Style Category" dropdown to narrow down outfits by style.
+
+4. Search Outfits: Use the "Search outfits by name or description..." input to find specific outfits.
+
+5. Like Outfits: Click the heart icon on an outfit card to toggle its "liked" status. Liked outfits are saved and can be viewed in the "Favorites" section.
+
+6. View Favorites: Click the "My Favorites" button in the navigation bar to see only your liked outfits. Click "Back to All Looks" to return to the main view.
+
+7. Discover Complementary Items: Click on any outfit card to reveal a section below it with complementary product suggestions.
+
+8. Toggle Dark Mode: Use the moon/sun icon in the navigation bar to switch between light and dark themes.
+
+9. Newsletter: Enter your email in the footer to subscribe to the newsletter.
+
+# Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+# License
+MIT
+
+# Author
+Wambui Kibathi
