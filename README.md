@@ -6,21 +6,23 @@ Look-book is a simple web application designed to showcase various fashion outfi
 
 2. Outfits: Clicking on the displayed outfits, reveals the outfits description.
 
-2. Filtering: Filter outfits by style category (e.g., Formal, Casual, Preppy, Western, Maximalist).
+3. Filtering: Filter outfits by style category (e.g., Formal, Casual, Preppy, Western, Maximalist).
 
-3. Liking System: Mark outfits as liked/un-liked, with a dedicated "Favorites" section to view all liked items.
+4. Liking System: Mark outfits as liked/un-liked, with a dedicated "Favorites" section to view all liked items.
 
-4. Complementary Items: Clicking on the discover more items-button reveals a section for complementary products, enhancing the user's fashion exploration.
+5. Complementary Items: Clicking on the discover more items-button reveals a section for complementary products, enhancing the user's fashion exploration.
 
-5. Search Functionality: Easily search outfits by name or description.
+6. Search Functionality: Easily search outfits by name or description.
 
-6. Dark Mode Toggle: Switch between light and dark themes for a personalized Browse experience.
+7. Dark Mode Toggle: Switch between light and dark themes for a personalized Browse experience.
 
-7. Newsletter Subscription: A simple form to subscribe to fashion updates.
+8. Newsletter Subscription: A simple form to subscribe to fashion updates.
 
-8. Responsive Design: Optimized for various screen sizes, from mobile to desktop.
+9. Responsive Design: Optimized for various screen sizes, from mobile to desktop.
 
-9. Local API Integration: Fetches outfit data from a local JSON server.
+10. Local API Integration: Fetches outfit data from a local JSON server.
+
+11. External API Integration: Fetches complimentary items data from an external API (Fake Store API)
 
 # Technologies Used
 - Frontend:
