@@ -5,7 +5,7 @@
       "name": "Business Chic",
       "style": "Formal",
       "avatar": "https://i.pinimg.com/736x/7b/16/f1/7b16f13e23097bbd2f8bc8930b50c141.jpg",
-      "description": "",
+      "description": "Smart, polished and sophisticated.",
       "liked": "true"
     },
     {
@@ -13,7 +13,7 @@
       "name": "Vintage Street ware",
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/21/4e/0e/214e0ebcfb930c737bb6659c02ccde39.jpg",
-      "description": "",
+      "description": "Retro, oversized and very hip.",
       "liked": "true"
     },
     {
@@ -21,7 +21,7 @@
       "name": "Korean Pastels",
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/6f/37/e6/6f37e630c604b99aaa0cd5baab438459.jpg",
-      "description": "",
+      "description": "Soft, whimsical and feminine.",
       "liked": "true"
     },
     {
@@ -29,7 +29,7 @@
       "name": "Old Money Aesthetic",
       "style": "Preppy",
       "avatar": "https://i.pinimg.com/736x/f1/75/85/f175857fce59692bacda2cf2ea36c2da.jpg",
-      "description": "",
+      "description": "Tailored, timeless and understated.",
       "liked": "false"
     },
     {
@@ -37,7 +37,7 @@
       "name": "Cowboy Carter",
       "style": "Western",
       "avatar": "https://i.pinimg.com/736x/99/fc/44/99fc44489d84a0ef400bc0b94763135b.jpg",
-      "description": "",
+      "description": "Western, glamorous and Bold.",
       "liked": "false"
     },
     {
@@ -45,7 +45,7 @@
       "name": "Glam Grunge",
       "style": "Maximalist",
       "avatar": "https://i.pinimg.com/736x/f8/e5/60/f8e5607d838ae7a5de8c5e5c7a632315.jpg",
-      "description": "",
+      "description": "Edgy, contrasted and rebellious",
       "liked": "false"
     }
   ]

@@ -173,7 +173,6 @@ function removeFavorite(outfitId) {
   }
 }
 
-
 function createProductCard(item) {
   const card = document.createElement('div');
   card.className = 'card product-card';
