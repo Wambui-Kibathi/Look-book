@@ -4,11 +4,13 @@ Look-book is a simple web application designed to showcase various fashion outfi
 # Features
 1. Outfit Display: Browse a collection of various fashion outfits.
 
+2. Outfits: Clicking on the displayed outfits, reveals the outfits description.
+
 2. Filtering: Filter outfits by style category (e.g., Formal, Casual, Preppy, Western, Maximalist).
 
 3. Liking System: Mark outfits as liked/un-liked, with a dedicated "Favorites" section to view all liked items.
 
-4. Complementary Items: Clicking on an outfit reveals a section for complementary products, enhancing the user's fashion exploration.
+4. Complementary Items: Clicking on the discover more items-button reveals a section for complementary products, enhancing the user's fashion exploration.
 
 5. Search Functionality: Easily search outfits by name or description.
 
