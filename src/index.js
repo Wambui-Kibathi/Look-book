@@ -1,6 +1,6 @@
 // statement.js
 let allOutfits = [];
-let currentView = 'all'; // Initial view set to 'all'
+let currentView = 'all'; 
 
 // APIs js
 const LOCAL_API_URL = 'http://localhost:3000/outfits';
@@ -11,12 +11,12 @@ async function fetchOutfits() {
   if (!response.ok) throw new Error('Failed to fetch outfits');
   const data = await response.json();
   console.log("Fetched outfits:", data);
-  // Ensure 'liked' is a boolean. The previous code had a slight error, fix it here:
+ 
   return data.map(o => ({ ...o, liked: o.liked === true || o.liked === 'true', isBlurred: false }));
 }
 
 async function patchOutfitLike(outfitId, liked) {
-  // Send 'liked' as a boolean directly, as it's cleaner for JSON
+  
   return await fetch(`${LOCAL_API_URL}/${outfitId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -47,14 +47,13 @@ function showToast(message, duration = 3000) {
       return;
   }
 
-  // Clear any existing timeouts to prevent conflicts if showToast is called rapidly
   if (toast.showTimeout) {
       clearTimeout(toast.showTimeout);
   }
   if (toast.hideTimeout) {
       clearTimeout(toast.hideTimeout);
   }
-  if (toast.hideCompleteTimeout) { // Also clear this one
+  if (toast.hideCompleteTimeout) { 
       clearTimeout(toast.hideCompleteTimeout);
   }
 
@@ -63,7 +62,7 @@ function showToast(message, duration = 3000) {
   toast.classList.remove('hidden');
 
   toast.showTimeout = setTimeout(() => {
-      toast.classList.add('show'); // Sets opacity to 1 and display to block (fades in)
+      toast.classList.add('show'); 
   }, 10); 
 
  
@@ -130,35 +129,32 @@ function createOutfitCard(item) {
   return card;
 }
 
-// Centralized like button event handler attachment
 function setupLikeButtonEvent(button) {
     if (button.dataset.listenerAttached) {
-        return; // Already has a listener, skip
+        return; 
     }
     button.addEventListener('click', async (e) => {
-        e.stopPropagation(); // Prevent bubbling up to the outfit card's click event
+        e.stopPropagation(); 
         const outfitId = parseInt(button.getAttribute('data-id'));
-        await toggleLike(outfitId); // Call the main toggleLike function
+        await toggleLike(outfitId); 
     });
-    button.dataset.listenerAttached = 'true'; // Mark that a listener has been attached
+    button.dataset.listenerAttached = 'true'; 
 }
 
-// Function to setup click events for outfit cards (for blur/complementary items)
 function setupOutfitCardClickEvent(card) {
     if (card.dataset.cardListenerAttached) {
-        return; // Already has a listener, skip
+        return; 
     }
     card.addEventListener('click', e => {
-        // Ensure click is not from the like button itself
-        if (!e.target.closest('.like-button')) {
+         if (!e.target.closest('.like-button')) {
             toggleBlur(card.dataset.id);
         }
     });
-    card.dataset.cardListenerAttached = 'true'; // Mark that a listener has been attached
+    card.dataset.cardListenerAttached = 'true'; 
 }
 
 function renderCards(items, container, isOutfit = true) {
-  container.innerHTML = ''; // Clear container before rendering
+  container.innerHTML = ''; 
 
   if (!items.length) {
     const msg = document.createElement('p');
@@ -172,11 +168,11 @@ function renderCards(items, container, isOutfit = true) {
   for (const item of items) {
     const card = isOutfit ? createOutfitCard(item) : createProductCard(item);
     container.appendChild(card);
-    // Attach event listeners immediately after appending to DOM
+
     if (isOutfit) {
       const likeButton = card.querySelector('.like-button');
       if (likeButton) setupLikeButtonEvent(likeButton);
-      setupOutfitCardClickEvent(card); // Attach click for blur
+      setupOutfitCardClickEvent(card); 
     }
   }
 }
@@ -188,18 +184,17 @@ function toggleBlur(id) {
   const card = document.querySelector(`.outfit-card[data-id="${id}"]`);
   if (!card) return;
 
-  outfit.isBlurred = !outfit.isBlurred; // Update data state
-  card.classList.toggle('blurred'); // Toggle class for visual blur
+  outfit.isBlurred = !outfit.isBlurred; 
+  card.classList.toggle('blurred'); 
 
-  // Load complementary items if blurred, clear if un-blurred
   const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
-  if (complementaryItemsSection) { // Ensure the section exists
+  if (complementaryItemsSection) {
     if (outfit.isBlurred) {
-      complementaryItemsSection.classList.remove('hidden'); // Show complementary section
+      complementaryItemsSection.classList.remove('hidden'); 
       loadComplementaryItems();
     } else {
-      complementaryItemsSection.classList.add('hidden'); // Hide complementary section
-      document.querySelector('#complementaryItemsContainer').innerHTML = ''; // Clear items
+      complementaryItemsSection.classList.add('hidden'); 
+      document.querySelector('#complementaryItemsContainer').innerHTML = ''; 
     }
   }
 }
@@ -208,11 +203,10 @@ async function toggleLike(id) {
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
 
-  const originalLikedState = outfit.liked; // Store original state for rollback
-  outfit.liked = !outfit.liked; // Optimistically update in-memory state
-  updateFavoritesCount(); // Update the count immediately
+  const originalLikedState = outfit.liked; 
+  outfit.liked = !outfit.liked; 
+  updateFavoritesCount();
 
-  // Update heart icon src in the main grid (if visible)
   const heartIconInMainGrid = document.querySelector(`#outfitsContainer .like-button[data-id="${id}"] .heart-icon`);
   if (heartIconInMainGrid) {
     heartIconInMainGrid.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
@@ -220,39 +214,34 @@ async function toggleLike(id) {
   }
 
   try {
-    await patchOutfitLike(id, outfit.liked); // Send PATCH request to server
+    await patchOutfitLike(id, outfit.liked); 
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
 
-    // --- DOM manipulation for Favorites Container (Crucial for flicker fix) ---
+    // DOM manipulation for Favorites Container 
     const favoritesContainer = document.querySelector('#favoritesContainer');
     if (favoritesContainer) {
       const outfitCardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
 
       if (outfit.liked) {
-        // If outfit is liked and not already in favorites container, create and append it
+        
         if (!outfitCardInFavorites) {
           const newCardForFavs = createOutfitCard(outfit);
           favoritesContainer.appendChild(newCardForFavs);
-          // Set up event listeners for the NEW card in the favorites section
+          
           const newLikeButton = newCardForFavs.querySelector('.like-button');
           if (newLikeButton) setupLikeButtonEvent(newLikeButton);
           setupOutfitCardClickEvent(newCardForFavs);
         }
-      } else { // If unliked
-        // If it exists in favorites container, remove it
+      } else { 
         if (outfitCardInFavorites) {
           outfitCardInFavorites.remove();
         }
       }
-      // Update 'no favorites message' visibility for the favorites container
+      
       const favCount = allOutfits.filter(o => o.liked).length;
       document.querySelector('#noFavoritesMessage')?.classList.toggle('hidden', favCount > 0);
     }
 
-    // IMPORTANT FIX: Removed the line below. This was causing the flickering
-    // if (currentView === 'favorites') {
-    //     filterAndRenderOutfits(); // NO! This causes a full re-render and flicker!
-    // }
 
   } catch (error) {
     console.error("Failed to update like status:", error);
@@ -267,7 +256,6 @@ async function toggleLike(id) {
     }
   }
 }
-
 
 function populateStyleFilter(outfits) {
   const filter = document.querySelector('#styleFilter');
@@ -297,45 +285,42 @@ function filterAndRenderOutfits() {
 
   const targetContainer = currentView === 'all' ? document.querySelector('#outfitsContainer') : document.querySelector('#favoritesContainer');
   if (targetContainer) {
-      renderCards(filtered, targetContainer, true); // Always renders outfits
-      // Ensure the 'no favorites message' is correctly hidden/shown if in favorites view
+      renderCards(filtered, targetContainer, true); 
       if (currentView === 'favorites') {
         document.querySelector('#noFavoritesMessage')?.classList.toggle('hidden', filtered.length > 0);
       }
   }
 }
 
-// **REFACTORED:** renderFavoritesView to handle visibility and re-render only when switching to this view
 function renderFavoritesView() {
-  currentView = 'favorites'; // Update global view state
-  const outfitsMainSection = document.querySelector('#outfitsMainSection'); // Assuming this wraps search/filter and outfitsContainer
+  currentView = 'favorites'; 
+  const outfitsMainSection = document.querySelector('#outfitsMainSection'); 
   const favoritesSection = document.querySelector('#favoritesSection');
   const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
 
-  // Hide other sections, show favorites section
+  
   if (outfitsMainSection) outfitsMainSection.classList.add('hidden');
-  if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden'); // Ensure complementary is hidden when viewing favorites
+  if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden'); 
   if (favoritesSection) favoritesSection.classList.remove('hidden');
 
-  // Re-render the favorites grid based on current filters (if any applied)
+  
   filterAndRenderOutfits();
-  resetSearchAndFilters(); // Clear filters when switching view
+  resetSearchAndFilters(); 
 }
 
-// **REFACTORED:** Function to switch back to all looks view
 function renderAllOutfitsView() {
-    currentView = 'all'; // Update global view state
+    currentView = 'all'; 
     const outfitsMainSection = document.querySelector('#outfitsMainSection');
     const favoritesSection = document.querySelector('#favoritesSection');
-    const complementaryItemsSection = document.querySelector('#complementaryItemsSection'); // Ensure it's hidden
+    const complementaryItemsSection = document.querySelector('#complementaryItemsSection'); 
 
-    // Show main outfits section, hide others
+    
     if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
     if (favoritesSection) favoritesSection.classList.add('hidden');
     if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
     
-    filterAndRenderOutfits(); // Apply any existing filters/search to the main grid
-    resetSearchAndFilters(); // Clear filters
+    filterAndRenderOutfits(); 
+    resetSearchAndFilters(); 
 }
 
 async function loadComplementaryItems() {
@@ -359,12 +344,10 @@ async function loadComplementaryItems() {
   }
 }
 
-// **REFACTORED:** initializeApp for clearer initial state and event listener setup
 async function initializeApp() {
   document.querySelector('#loadingIndicator')?.classList.remove('hidden');
   document.querySelector('#errorMessage')?.classList.add('hidden');
 
-  // Apply dark mode based on preference or localStorage
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const savedTheme = localStorage.getItem('color-theme');
   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -375,21 +358,18 @@ async function initializeApp() {
     allOutfits = await fetchOutfits();
     populateStyleFilter(allOutfits);
 
-    // Initial render of all outfits (default view)
     const outfitsContainer = document.querySelector('#outfitsContainer');
     if (outfitsContainer) {
         renderCards(allOutfits, outfitsContainer); 
-        // Event listeners for individual outfit cards and like buttons are attached within renderCards now.
     }
-    
-    // Pre-populate the hidden favorites container (to allow toggleLike to manipulate it)
+
     const favoritesContainer = document.querySelector('#favoritesContainer');
     if (favoritesContainer) {
         const initialFavorites = allOutfits.filter(o => o.liked);
         initialFavorites.forEach(item => {
             const card = createOutfitCard(item);
             favoritesContainer.appendChild(card);
-            // Attach event listeners for these pre-rendered favorite cards
+            
             const likeButton = card.querySelector('.like-button');
             if (likeButton) setupLikeButtonEvent(likeButton);
             setupOutfitCardClickEvent(card);
@@ -397,13 +377,12 @@ async function initializeApp() {
         document.querySelector('#noFavoritesMessage')?.classList.toggle('hidden', initialFavorites.length > 0);
     }
     
-    // Set initial visibility of sections for SPA behavior
-    document.querySelector('#outfitsMainSection')?.classList.remove('hidden'); // Show main section by default
-    document.querySelector('#complementaryItemsSection')?.classList.add('hidden'); // Hide complementary
-    document.querySelector('#favoritesSection')?.classList.add('hidden'); // Hide favorites
-    currentView = 'all'; // Confirm initial view state
+    document.querySelector('#outfitsMainSection')?.classList.remove('hidden'); 
+    document.querySelector('#complementaryItemsSection')?.classList.add('hidden');
+    document.querySelector('#favoritesSection')?.classList.add('hidden'); 
+    currentView = 'all';
 
-    updateFavoritesCount(); // Update the favorites count in the header
+    updateFavoritesCount(); 
 
   } catch (err) {
     console.error("Initialization error:", err);
@@ -429,19 +408,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // View Favorites Button
   document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => {
-    renderFavoritesView(); // Switch to and render the favorites view
+    renderFavoritesView(); 
     const favoritesSection = document.querySelector('#favoritesSection');
     if (favoritesSection) {
       favoritesSection.scrollIntoView({ behavior: 'smooth' });
     }
   });
 
-  // Back to All Looks Button (assuming you have this button in your HTML)
   document.querySelector('#backToAllLooksBtn')?.addEventListener('click', () => {
-      renderAllOutfitsView(); // Switch back to all outfits view
+      renderAllOutfitsView(); 
   });
 
-  // Discover Items Button (This will also trigger showing the complementary section)
   document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
 
   // Newsletter Form Event Listener
@@ -449,18 +426,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('newsletterEmail');
   const messageDisplay = document.getElementById('newsletterMessage');
 
-  if (form && emailInput && messageDisplay) { // Ensure all elements exist
+  if (form && emailInput && messageDisplay) { 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = emailInput.value.trim();
 
-      if (emailInput.checkValidity()) { // Use HTML5 validation
+      if (emailInput.checkValidity()) { 
         messageDisplay.textContent = `Thank you for subscribing, ${email}!`;
-        messageDisplay.style.color = '#d4edda'; // Success color
-        emailInput.value = ''; // Clear input
+        messageDisplay.style.color = '#d4edda'; 
+        emailInput.value = ''; 
       } else {
         messageDisplay.textContent = 'Please enter a valid email address.';
-        messageDisplay.style.color = '#f8d7da'; // Error color
+        messageDisplay.style.color = '#f8d7da';
       }
 
       messageDisplay.classList.remove('hidden');
