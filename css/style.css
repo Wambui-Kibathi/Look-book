@@ -128,11 +128,12 @@ html.dark .icon {
   }
   
 .heart-icon {
-    width: 20px;
-    height: 20px;
-    fill: crimson;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     transition: transform 0.2s;
+    object-fit: contain;
+    display: block;
 }
   
 .heart-icon:hover {
@@ -397,6 +398,11 @@ html.dark .card-style {
     font-weight: 500;
 }
 
+.like-button .heart-icon{
+    width: 24px;
+    height: 24px;
+}
+
 .like-button {
     position: absolute;
     top: 16px;
@@ -421,15 +427,6 @@ html.dark .like-button {
 }
 html.dark .like-button:hover {
     background: rgba(0, 0, 0, 0.8);
-}
-.like-button svg {
-    width: 24px;
-    height: 24px;
-    fill: #a0522d; 
-    transition: fill 0.2s ease;
-}
-.like-button.liked svg {
-    fill: #EF4444; 
 }
 
 .product-card .product-image {
@@ -637,15 +634,15 @@ html.dark .no-favorites-message {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     opacity: 0;
-    visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     z-index: 1000;
     font-size: 0.9rem;
     text-align: center;
+    display: none;
 }
 .toast-notification.show {
     opacity: 1;
-    visibility: visible;
+    display: block;
 }
 
 @media (max-width: 639px) { 
