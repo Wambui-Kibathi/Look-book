@@ -6,7 +6,7 @@
       "style": "Formal",
       "avatar": "https://i.pinimg.com/736x/7b/16/f1/7b16f13e23097bbd2f8bc8930b50c141.jpg",
       "description": "Smart, polished and sophisticated.",
-      "liked": "true"
+      "liked": true
     },
     {
       "id": "2",
@@ -14,7 +14,7 @@
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/21/4e/0e/214e0ebcfb930c737bb6659c02ccde39.jpg",
       "description": "Retro, oversized and very hip.",
-      "liked": "true"
+      "liked": true
     },
     {
       "id": "3",
@@ -22,7 +22,7 @@
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/6f/37/e6/6f37e630c604b99aaa0cd5baab438459.jpg",
       "description": "Soft, whimsical and feminine.",
-      "liked": "true"
+      "liked": true
     },
     {
       "id": "4",
@@ -30,7 +30,7 @@
       "style": "Preppy",
       "avatar": "https://i.pinimg.com/736x/f1/75/85/f175857fce59692bacda2cf2ea36c2da.jpg",
       "description": "Tailored, timeless and understated.",
-      "liked": "false"
+      "liked": false
     },
     {
       "id": "5",
@@ -38,7 +38,7 @@
       "style": "Western",
       "avatar": "https://i.pinimg.com/736x/99/fc/44/99fc44489d84a0ef400bc0b94763135b.jpg",
       "description": "Western, glamorous and Bold.",
-      "liked": "false"
+      "liked": false
     },
     {
       "id": "6",
@@ -46,7 +46,7 @@
       "style": "Maximalist",
       "avatar": "https://i.pinimg.com/736x/f8/e5/60/f8e5607d838ae7a5de8c5e5c7a632315.jpg",
       "description": "Edgy, contrasted and rebellious",
-      "liked": "false"
+      "liked": false
     }
   ]
 }
