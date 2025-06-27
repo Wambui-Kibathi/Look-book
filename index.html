@@ -75,39 +75,34 @@
         <p>Loading outfits...</p>
       </div>
       
-      <section id="outfitsMainSection">
-        <div id="outfitsContainer" class="outfits-grid"></div>
-
-        <div id="errorMessage" class="hidden">
-          <p>Oops! Something went wrong while loading outfits. Please try again.</p>
-        </div>
-      </section>
+      <div id="outfitsContainer" class="outfits-grid"></div>
       
-      <section id="complementaryItemsSection" class="hidden">
-        <div class="complementary-items-section" id="products">
-          <h2>Suggested Complementary Items</h2>
-          <div>
-            <button id="discoverItemsBtn">Discover More Items</button>
+      <div id="errorMessage" class="hidden">
+        <p>Oops! Something went wrong while loading outfits. Please try again.</p>
+      </div>
+      
+      <div class="complementary-items-section" id="products">
+        <h2>Suggested Complementary Items</h2>
+        <div>
+          <button id="discoverItemsBtn">Discover More Items</button>
           </div>
-          <div id="loadingComplementaryItems" class="loader-indicator hidden">
-            <p>Loading items...</p>
-          </div>
-          <div id="complementaryItemsContainer" class="complementary-items-grid"></div>
-          <div id="complementaryItemsError" class="error-message hidden">
-            <p>Could not load complementary items. Please try again.</p>
-          </div>
+        <div id="loadingComplementaryItems" class="loader-indicator hidden">
+          <p>Loading items...</p>
         </div>
-      </section>
+        <div id="complementaryItemsContainer" class="complementary-items-grid"></div>
+        <div id="complementaryItemsError" class="error-message hidden">
+          <p>Could not load complementary items. Please try again.</p>
+        </div>
+      </div>
 
-      <section id="favoritesSection" class="hidden">
+      <div class="favoritesSection">
           <h2>Your Favorites</h2>
           <div id="favoritesContainer" class="favorites-grid"></div>
           <div id="noFavoritesMessage" class="hidden">
             <p>You haven't liked any outfits yet.</p>
           </div>
           <button id="backToAllLooksBtn">Back to All Looks</button>
-      </section>
-    </div>
+      </div>
 
     <footer class="footer">
       <div class="footer-container">
