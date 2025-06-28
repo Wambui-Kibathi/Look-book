@@ -18,7 +18,7 @@ async function patchOutfitLike(outfitId, liked) {
   return await fetch(`${LOCAL_API_URL}/${outfitId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ liked: liked }) // Send as boolean true/false
+    body: JSON.stringify({ liked: liked }) 
   });
 }
 
@@ -33,7 +33,7 @@ async function fetchComplementaryItems() {
     return data;
   } catch (error) {
     console.error("Error fetching complementary items:", error);
-    throw error; // Re-throw to be caught by loadComplementaryItems
+    throw error;
   }
 }
 
@@ -179,11 +179,10 @@ function renderCards(items, container, isOutfit = true) {
   for (const item of items) {
     const card = isOutfit ? createOutfitCard(item) : createProductCard(item);
     container.appendChild(card);
-    
     if (isOutfit) {
       const likeButton = card.querySelector('.like-button');
-      if (likeButton) setupLikeButtonEvent(likeButton);
-      setupOutfitCardClickEvent(card);
+      //if (likeButton) setupLikeButtonEvent(likeButton);
+      //setupOutfitCardClickEvent(card);
     }
   }
 }
@@ -208,6 +207,7 @@ function toggleBlur(id) {
 }
 
 async function toggleLike(id) {
+  console.log(`toggleLike called for outfit ID: ${id}`);
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
 
@@ -215,10 +215,13 @@ async function toggleLike(id) {
   outfit.liked = !outfit.liked;
   updateFavoritesCount();
 
-  const heartIconInMainGrid = document.querySelector(`#outfitsContainer .like-button[data-id="${id}"] .heart-icon`);
-  if (heartIconInMainGrid) {
-    heartIconInMainGrid.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+  const card = document.querySelector(`.outfit-card[data-id="${id}"]`);
+  if (card) {
+  const heartIcon = card.querySelector('.heart-icon');
+  if (heartIcon) {
+    heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
   }
+}
 
   try {
     await patchOutfitLike(id, outfit.liked);
@@ -232,6 +235,7 @@ async function toggleLike(id) {
         if (!outfitCardInFavorites) {
           const newCardForFavs = createOutfitCard(outfit);
           favoritesContainer.appendChild(newCardForFavs);
+
           const newLikeButton = newCardForFavs.querySelector('.like-button');
           if (newLikeButton) setupLikeButtonEvent(newLikeButton);
           setupOutfitCardClickEvent(newCardForFavs);
@@ -252,8 +256,8 @@ async function toggleLike(id) {
     updateFavoritesCount();
     showToast('Failed to update like status');
    
-    if (heartIconInMainGrid) {
-      heartIconInMainGrid.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+    if (heartIcon) {
+      heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
     }
   }
 }
@@ -271,6 +275,7 @@ function populateStyleFilter(outfits) {
 }
 
 function filterAndRenderOutfits() {
+  console.log("filterAndRenderOutfits called!");
   const term = document.querySelector('#searchOutfits')?.value.toLowerCase() || '';
   const selectedStyle = document.querySelector('#styleFilter')?.value || '';
   
@@ -441,9 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const viewFavoritesBtn = document.querySelector('#viewFavoritesBtn');
   const backToAllLooksBtn = document.querySelector('#backToAllLooksBtn');
-
-  // Log to check if buttons are found in the DOM
-  console.log("Buttons found on DOMContentLoaded:", {
+  console.log("Buttons found on DOMContentLoaded:", { //to check if buttons are found in DOM.
       viewFavoritesBtn: !!viewFavoritesBtn,
       backToAllLooksBtn: !!backToAllLooksBtn
   });
@@ -468,6 +471,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   } else {
     console.warn("Element with ID '#backToAllLooksBtn' not found!");
+  }
+
+  const outfitsContainer = document.querySelector('#outfitsContainer');
+  if (outfitsContainer) {
+    outfitsContainer.addEventListener('click', async (e) => {
+      const likeBtn = e.target.closest('.like-button');
+      if (likeBtn) {
+        e.stopPropagation();
+        const outfitId = parseInt(likeBtn.getAttribute('data-id'));
+        await toggleLike(outfitId);
+      }
+    });
   }
 
   const form = document.getElementById('newsletter');
