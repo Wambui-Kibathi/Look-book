@@ -181,8 +181,6 @@ function renderCards(items, container, isOutfit = true) {
     container.appendChild(card);
     if (isOutfit) {
       const likeButton = card.querySelector('.like-button');
-      //if (likeButton) setupLikeButtonEvent(likeButton);
-      //setupOutfitCardClickEvent(card);
     }
   }
 }
@@ -298,7 +296,6 @@ function filterAndRenderOutfits() {
   }
 }
 
-// *** MODIFIED FUNCTION: renderFavoritesView for section switching and logging ***
 function renderFavoritesView() {
   console.log("renderFavoritesView called");
   currentView = 'favorites';
@@ -326,7 +323,6 @@ function renderFavoritesView() {
   resetSearchAndFilters();
 }
 
-// *** MODIFIED FUNCTION: renderAllOutfitsView for section switching and logging ***
 function renderAllOutfitsView() {
     console.log("renderAllOutfitsView called");
     currentView = 'all';
@@ -357,7 +353,6 @@ function renderAllOutfitsView() {
 async function loadComplementaryItems() {
   const loadingIndicator = document.querySelector('#loadingComplementaryItems');
   const errorContainer = document.querySelector('#complementaryItemsError');
-  const itemsContainer = document.querySelector('#complementaryItemsContainer');
 
   if (loadingIndicator) loadingIndicator.classList.remove('hidden');
   if (errorContainer) errorContainer.classList.add('hidden');
@@ -365,7 +360,9 @@ async function loadComplementaryItems() {
 
   try {
     const items = await fetchComplementaryItems();
-    if (itemsContainer) renderCards(items, itemsContainer, false);
+    if (itemsContainer && itemsContainer.innerHTML.trim() === '') {
+      renderCards(items, itemsContainer, false);
+    }
   } catch (err) {
     console.error("Error loading complementary items:", err);
     if (errorContainer) {
@@ -405,21 +402,23 @@ async function initializeApp() {
     populateStyleFilter(allOutfits);
 
     if (outfitsContainer) {
-        renderCards(allOutfits, outfitsContainer);
+      renderCards(allOutfits, outfitsContainer);
     }
 
-    if (favoritesContainer) {
-        const initialFavorites = allOutfits.filter(o => o.liked);
-        renderCards(initialFavorites, favoritesContainer, true);
-        if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', initialFavorites.length > 0);
-    }
-    
+    await loadComplementaryItems();
+
     // Ensure correct initial view is shown (All Looks)
     if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
-    if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
+    if (complementaryItemsSection) complementaryItemsSection.classList.remove('hidden');
     if (favoritesSection) favoritesSection.classList.add('hidden');
-    currentView = 'all';
 
+    if (favoritesContainer) {
+      const initialFavorites = allOutfits.filter(o => o.liked);
+      renderCards(initialFavorites, favoritesContainer, true);
+      if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', initialFavorites.length > 0);
+    }
+
+    currentView = 'all';
     updateFavoritesCount();
 
   } catch (err) {
