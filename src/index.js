@@ -1,37 +1,36 @@
+// statement.js
 let allOutfits = [];
 let currentView = 'all';
 
+// Local and External APIs
 const LOCAL_API_URL = 'http://localhost:3000/outfits';
 const EXTERNAL_API_URL = 'https://fakestoreapi.com/products?limit=6';
 
-//fetch outfits from local JSON server
 async function fetchOutfits() {
-  const response = await fetch(LOCAL_API_URL);
-  if (!response.ok) throw new Error('Failed to fetch outfits');
-  const data = await response.json();
+  const res = await fetch(LOCAL_API_URL);
+  if (!res.ok) throw new Error('Failed to fetch outfits');
+  const data = await res.json();
   console.log("Fetched outfits:", data);
-  return data.map(o => ({ ...o, liked: o.liked === true || o.liked === 'true', isBlurred: false }));
+  return data.map(o => ({ ...o, liked: o.liked === 'true', isBlurred: false }));
 }
 
-//update liked status in server
 async function patchOutfitLike(outfitId, liked) {
   return await fetch(`${LOCAL_API_URL}/${outfitId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ liked })
+    body: JSON.stringify({ liked: liked.toString() })
   });
 }
 
-//fetch complementary items from external API
 async function fetchComplementaryItems() {
-  const response = await fetch(EXTERNAL_API_URL);
-  if (!response.ok) throw new Error('Failed to fetch products');
-  const data = await response.json();
+  const res = await fetch(EXTERNAL_API_URL);
+  if (!res.ok) throw new Error('Failed to fetch products');
+  const data = await res.json();
   console.log("Fetched complementary items:", data);
   return data;
 }
 
-// utilities
+// DOM helpers
 function resetSearchAndFilters() {
   document.querySelector('#searchOutfits').value = '';
   document.querySelector('#styleFilter').value = '';
@@ -39,7 +38,6 @@ function resetSearchAndFilters() {
 
 function showToast(message, duration = 3000) {
   const toast = document.querySelector('#toastNotification');
-  if (!toast) return;
   toast.textContent = message;
   toast.classList.remove('hidden', 'fade-out');
   toast.classList.add('show');
@@ -53,32 +51,38 @@ function updateFavoritesCount() {
 }
 
 function toggleTheme() {
-  const root = document.documentElement;
-  const isDark = root.classList.toggle('dark');
+  const darkIcon = document.querySelector('#theme-toggle-dark-icon');
+  const lightIcon = document.querySelector('#theme-toggle-light-icon');
+  const isDark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
-  document.querySelector('#theme-toggle-dark-icon').classList.toggle('hidden', isDark);
-  document.querySelector('#theme-toggle-light-icon').classList.toggle('hidden', !isDark);
+  darkIcon.classList.toggle('hidden', isDark);
+  lightIcon.classList.toggle('hidden', !isDark);
 }
 
+function toggleMenu() {
+  document.querySelector('.menu-links').classList.toggle('open');
+  document.querySelector('.hamburger-icon').classList.toggle('open');
+}
+
+// Card Rendering
 function createOutfitCard(item) {
   const card = document.createElement('div');
   card.className = `card outfit-card${item.isBlurred ? ' blurred' : ''}`;
   card.dataset.id = item.id;
 
+  const heartSrc = item.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+
   card.innerHTML = `
     <div class="card-image-wrapper">
       <img src="${item.avatar || 'https://placehold.co/400x300'}" alt="${item.name}" class="card-image">
       <button class="like-button" data-id="${item.id}">
-        <img src="${item.liked ? './Icons/heart-filled.png' : './Icons/heart.png'}" alt="like" class="heart-icon" />
+        <img src="${heartSrc}" alt="like" class="heart-icon" />
       </button>
-      <div class="description-overlay">
-        <p>${item.description || 'No description available.'}</p>
-      </div>
+      <div class="description-overlay"><p>${item.description || 'No description available.'}</p></div>
     </div>
     <h3 class="card-title">${item.name}</h3>
     <p class="card-style">Style: <span>${item.style}</span></p>
   `;
-  
   return card;
 }
 
@@ -94,30 +98,32 @@ function createProductCard(item) {
   return card;
 }
 
-// Render cards (outfits or products)
 function renderCards(items, container, isOutfit = true) {
   container.innerHTML = '';
   if (!items.length) {
-    container.innerHTML = `<p style="text-align:center; color:gray;">No items found matching your criteria.</p>`;
+    const msg = document.createElement('p');
+    msg.style.textAlign = 'center';
+    msg.style.color = 'gray';
+    msg.textContent = 'No items found matching your criteria.';
+    container.appendChild(msg);
     return;
   }
 
-  items.forEach(item => {
+  for (const item of items) {
     const card = isOutfit ? createOutfitCard(item) : createProductCard(item);
     container.appendChild(card);
-  });
+  }
 
   if (isOutfit) setupLikeButtons(container);
 }
 
-// Like button setup
+// Like & Blur.js
 function setupLikeButtons(scope = document) {
-  const likeButtons = scope.querySelectorAll('.like-button');
-  likeButtons.forEach(button => {
+  scope.querySelectorAll('.like-button').forEach(button => {
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const outfitId = parseInt(button.getAttribute('data-id'));
-      await toggleLike(outfitId);
+      const id = parseInt(button.getAttribute('data-id'));
+      await toggleLike(id);
     });
   });
 }
@@ -127,17 +133,6 @@ function toggleBlur(id) {
   if (!outfit) return;
   outfit.isBlurred = !outfit.isBlurred;
   document.querySelector(`.outfit-card[data-id="${id}"]`)?.classList.toggle('blurred');
-
-  const complementarySection = document.querySelector('#complementaryItemsSection');
-  if (complementarySection) {
-    if (outfit.isBlurred) {
-      complementarySection.classList.remove('hidden');
-      loadComplementaryItems();
-    } else {
-      complementarySection.classList.add('hidden');
-      document.querySelector('#complementaryItemsContainer').innerHTML = '';
-    }
-  }
 }
 
 async function toggleLike(id) {
@@ -147,38 +142,14 @@ async function toggleLike(id) {
   outfit.liked = !outfit.liked;
   updateFavoritesCount();
 
-  const heartIcon = document.querySelector(`.outfit-card[data-id="${id}"] .heart-icon`);
-  if (heartIcon) heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
-
   try {
     await patchOutfitLike(id, outfit.liked);
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
-    const favoritesContainer = document.querySelector('#favoritesContainer');
-    const noFavoritesMessage = document.querySelector('#noFavoritesMessage');
 
-    if (favoritesContainer) {
-      if (outfit.liked) {
-        // Add to favorites if not already there
-        let cardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
-        if (!cardInFavorites) {
-          const newCard = createOutfitCard(outfit);
-          favoritesContainer.appendChild(newCard);
-          setupLikeButtons(newCard);
-        }
+    const heartIcon = document.querySelector(`.like-button[data-id="${id}"] .heart-icon`);
+    if (heartIcon) heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
 
-        // Auto-scroll to favorites section to show newly added outfit
-        favoritesContainer.scrollIntoView({ behavior: 'smooth' });
-
-        if (noFavoritesMessage) noFavoritesMessage.classList.add('hidden');
-      } else {
-        // Remove from favorites if unliked
-        const cardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
-        if (cardInFavorites) cardInFavorites.remove();
-
-        const remainingFavorites = allOutfits.filter(o => o.liked);
-        if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', remainingFavorites.length > 0);
-      }
-    }
+    renderFavorites();
   } catch {
     outfit.liked = !outfit.liked; // rollback
     updateFavoritesCount();
@@ -186,6 +157,7 @@ async function toggleLike(id) {
   }
 }
 
+// Filters.js
 function populateStyleFilter(outfits) {
   const filter = document.querySelector('#styleFilter');
   filter.innerHTML = '<option value="">Filter by Style Category</option>';
@@ -200,30 +172,61 @@ function populateStyleFilter(outfits) {
 function filterAndRenderOutfits() {
   const term = document.querySelector('#searchOutfits').value.toLowerCase();
   const selectedStyle = document.querySelector('#styleFilter').value;
-  const container = currentView === 'all' ? document.querySelector('#outfitsContainer') : document.querySelector('#favoritesContainer');
   const outfits = currentView === 'all' ? allOutfits : allOutfits.filter(o => o.liked);
-
   const filtered = outfits.filter(o =>
     (o.name.toLowerCase().includes(term) || o.description.toLowerCase().includes(term)) &&
     (!selectedStyle || o.style === selectedStyle)
   );
 
-  renderCards(filtered, container, true);
+  const container = currentView === 'all'
+    ? document.querySelector('#outfitsContainer')
+    : document.querySelector('#favoriteOutfitsContainer');
+
+  renderCards(filtered, container);
 }
 
+// Favorites.js
+function renderFavorites() {
+  const favorites = allOutfits.filter(o => o.liked);
+  const container = document.querySelector('#favoritesContainer');
+  const noMsg = document.querySelector('#noFavoritesMessage');
+
+  container.innerHTML = '';
+  if (!favorites.length) {
+    noMsg.classList.remove('hidden');
+  } else {
+    noMsg.classList.add('hidden');
+    favorites.forEach(item => container.appendChild(createOutfitCard(item)));
+  }
+
+  setupLikeButtons(container);
+}
+
+// Complementary Items.js
 async function loadComplementaryItems() {
+  const loading = document.querySelector('#loadingComplementaryItems');
+  const error = document.querySelector('#complementaryItemsError');
   const container = document.querySelector('#complementaryItemsContainer');
-  container.innerHTML = '<p>Loading...</p>';
+
+  loading.classList.remove('hidden');
+  error.classList.add('hidden');
+  container.innerHTML = '';
+
   try {
     const items = await fetchComplementaryItems();
     renderCards(items, container, false);
   } catch {
-    container.innerHTML = '<p style="color:red;">Failed to load items.</p>';
+    error.classList.remove('hidden');
+    error.innerHTML = '<p style="text-align:center; color:red;">Could not load suggested items.</p>';
+  } finally {
+    loading.classList.add('hidden');
   }
 }
 
+// Initialization.js
 async function initializeApp() {
   document.querySelector('#loadingIndicator').classList.remove('hidden');
+  document.querySelector('#errorMessage').classList.add('hidden');
 
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const savedTheme = localStorage.getItem('color-theme');
@@ -234,50 +237,59 @@ async function initializeApp() {
   try {
     allOutfits = await fetchOutfits();
     populateStyleFilter(allOutfits);
-    renderCards(allOutfits, document.querySelector('#outfitsContainer'), true);
+    renderCards(allOutfits, document.querySelector('#outfitsContainer'));
+    renderFavorites();
     updateFavoritesCount();
   } catch {
     document.querySelector('#errorMessage').classList.remove('hidden');
+    document.querySelector('#errorMessage').innerHTML = `
+      <p style="text-align: center; color: red;">
+        Oops! Could not load curated looks. Ensure <code>json-server</code> is running:<br>
+        <code style="display:block; background:#f0f0f0; padding:4px; border-radius:4px;">json-server --watch db.json --port 3000</code>
+      </p>`;
   } finally {
     document.querySelector('#loadingIndicator').classList.add('hidden');
   }
 }
 
-// Event listeners
+// Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
 
   document.querySelector('#darkModeToggle')?.addEventListener('click', toggleTheme);
   document.querySelector('#searchOutfits')?.addEventListener('input', filterAndRenderOutfits);
   document.querySelector('#styleFilter')?.addEventListener('change', filterAndRenderOutfits);
-  document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
-
   document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => {
-    currentView = 'favorites';
-    filterAndRenderOutfits();
-    document.querySelector('#favoritesSection').classList.remove('hidden');
-    document.querySelector('#outfitsMainSection').classList.add('hidden');
+    document.querySelector('#favoritesContainer').scrollIntoView({ behavior: 'smooth' });
   });
 
   document.querySelector('#backToAllLooksBtn')?.addEventListener('click', () => {
     currentView = 'all';
+    resetSearchAndFilters();
     filterAndRenderOutfits();
-    document.querySelector('#favoritesSection').classList.add('hidden');
-    document.querySelector('#outfitsMainSection').classList.remove('hidden');
+    document.querySelector('#outfitsContainer').scrollIntoView({behavior: 'smooth'});
   });
+  
+  document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
 
-  document.querySelector('#newsletter')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.querySelector('#newsletterEmail').value.trim();
-    const message = document.querySelector('#newsletterMessage');
-    if (email && email.includes('@')) {
-      message.textContent = `Thank you for subscribing, ${email}!`;
-      message.style.color = '#d4edda';
-    } else {
-      message.textContent = 'Please enter a valid email address.';
-      message.style.color = '#f8d7da';
-    }
-    message.classList.remove('hidden');
-    setTimeout(() => message.classList.add('hidden'), 5000);
-  });
+  const form = document.getElementById('newsletter');
+  const emailInput = document.getElementById('newsletterEmail');
+  const messageDisplay = document.getElementById('newsletterMessage');
+
+  if (form && emailInput && messageDisplay) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (emailInput.checkValidity()) {
+        messageDisplay.textContent = `Thank you for subscribing, ${email}!`;
+        messageDisplay.style.color = '#d4edda';
+        emailInput.value = '';
+      } else {
+        messageDisplay.textContent = 'Please enter a valid email address.';
+        messageDisplay.style.color = '#f8d7da';
+      }
+      messageDisplay.classList.remove('hidden');
+      setTimeout(() => messageDisplay.classList.add('hidden'), 5000);
+    });
+  }
 });
