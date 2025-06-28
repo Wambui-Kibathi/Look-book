@@ -1,4 +1,3 @@
-// statement.js
 let allOutfits = [];
 let currentView = 'all';
 
@@ -117,7 +116,6 @@ function renderCards(items, container, isOutfit = true) {
   if (isOutfit) setupLikeButtons(container);
 }
 
-// Like & Blur.js
 function setupLikeButtons(scope = document) {
   scope.querySelectorAll('.like-button').forEach(button => {
     button.addEventListener('click', async (e) => {
@@ -151,13 +149,13 @@ async function toggleLike(id) {
 
     renderFavorites();
   } catch {
-    outfit.liked = !outfit.liked; // rollback
+    outfit.liked = !outfit.liked; 
     updateFavoritesCount();
     showToast('Failed to update like status');
   }
 }
 
-// Filters.js
+// Filters
 function populateStyleFilter(outfits) {
   const filter = document.querySelector('#styleFilter');
   filter.innerHTML = '<option value="">Filter by Style Category</option>';
@@ -185,7 +183,7 @@ function filterAndRenderOutfits() {
   renderCards(filtered, container);
 }
 
-// Favorites.js
+// Favorites
 function renderFavorites() {
   const favorites = allOutfits.filter(o => o.liked);
   const container = document.querySelector('#favoritesContainer');
@@ -202,7 +200,7 @@ function renderFavorites() {
   setupLikeButtons(container);
 }
 
-// Complementary Items.js
+// Complementary Items
 async function loadComplementaryItems() {
   const loading = document.querySelector('#loadingComplementaryItems');
   const error = document.querySelector('#complementaryItemsError');
@@ -223,7 +221,7 @@ async function loadComplementaryItems() {
   }
 }
 
-// Initialization.js
+// Initialization
 async function initializeApp() {
   document.querySelector('#loadingIndicator').classList.remove('hidden');
   document.querySelector('#errorMessage').classList.add('hidden');
@@ -269,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filterAndRenderOutfits();
     document.querySelector('#outfitsContainer').scrollIntoView({behavior: 'smooth'});
   });
-  
+
   document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
 
   const form = document.getElementById('newsletter');
