@@ -153,6 +153,32 @@ async function toggleLike(id) {
   try {
     await patchOutfitLike(id, outfit.liked);
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
+    const favoritesContainer = document.querySelector('#favoritesContainer');
+    const noFavoritesMessage = document.querySelector('#noFavoritesMessage');
+
+    if (favoritesContainer) {
+      if (outfit.liked) {
+        // Add to favorites if not already there
+        let cardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
+        if (!cardInFavorites) {
+          const newCard = createOutfitCard(outfit);
+          favoritesContainer.appendChild(newCard);
+          setupLikeButtons(newCard);
+        }
+
+        // Auto-scroll to favorites section to show newly added outfit
+        favoritesContainer.scrollIntoView({ behavior: 'smooth' });
+
+        if (noFavoritesMessage) noFavoritesMessage.classList.add('hidden');
+      } else {
+        // Remove from favorites if unliked
+        const cardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
+        if (cardInFavorites) cardInFavorites.remove();
+
+        const remainingFavorites = allOutfits.filter(o => o.liked);
+        if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', remainingFavorites.length > 0);
+      }
+    }
   } catch {
     outfit.liked = !outfit.liked; // rollback
     updateFavoritesCount();
