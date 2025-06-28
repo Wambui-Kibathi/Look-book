@@ -186,6 +186,7 @@ function renderCards(items, container, isOutfit = true) {
 }
 
 function toggleBlur(id) {
+  console.log("toggleBlur called for outfit ID:", id);
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
   outfit.isBlurred = !outfit.isBlurred;
@@ -351,30 +352,35 @@ function renderAllOutfitsView() {
 }
 
 async function loadComplementaryItems() {
-  const loadingIndicator = document.querySelector('#loadingComplementaryItems');
-  const errorContainer = document.querySelector('#complementaryItemsError');
+  
+  const container = document.querySelector('#complementaryItemsContainer');
+  const loading = document.querySelector('#complementaryLoading');
 
-  if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-  if (errorContainer) errorContainer.classList.add('hidden');
-  if (itemsContainer) itemsContainer.innerHTML = '';
+  if (!container || !loading) return;
+
+  container.innerHTML = '';
+  loading.classList.remove('hidden');
 
   try {
-    const items = await fetchComplementaryItems();
-    if (itemsContainer && itemsContainer.innerHTML.trim() === '') {
-      renderCards(items, itemsContainer, false);
-    }
-  } catch (err) {
-    console.error("Error loading complementary items:", err);
-    if (errorContainer) {
-        errorContainer.classList.remove('hidden');
-        errorContainer.innerHTML = `
-            <p style="text-align: center; color: red;">
-                Could not load suggested items. Please try again.
-            </p>
-        `;
-    }
+    const response = await fetch('https://fakestoreapi.com/products');
+    const products = await response.json();
+
+    products.forEach(product => {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('complementary-item');
+      itemDiv.innerHTML = `
+        <img src="${product.image}" alt="${product.title}">
+        <p>${product.title}</p>
+        <p>$${product.price}</p>
+      `;
+      container.appendChild(itemDiv);
+    });
+
+  } catch (error) {
+    console.error("Error loading complementary items:", error);
+    container.innerHTML = '<p style="color:red;">Failed to load complementary items.</p>';
   } finally {
-    if (loadingIndicator) loadingIndicator.classList.add('hidden');
+    loading.classList.add('hidden');
   }
 }
 
@@ -400,25 +406,31 @@ async function initializeApp() {
   try {
     allOutfits = await fetchOutfits();
     populateStyleFilter(allOutfits);
+    renderCards(allOutfits, document.querySelector('#outfitsContainer'));
+
+    await loadComplementaryItems(); //Preload complementary items once app initializes
+
+    // Show appropriate sections
+    document.querySelector('#outfitsMainSection')?.classList.remove('hidden');
+    document.querySelector('#complementaryItemsSection')?.classList.remove('hidden'); // Show complementary items on load
+    document.querySelector('#favoritesSection')?.classList.add('hidden');
 
     if (outfitsContainer) {
-      renderCards(allOutfits, outfitsContainer);
+        renderCards(allOutfits, outfitsContainer);
     }
-
-    await loadComplementaryItems();
-
-    // Ensure correct initial view is shown (All Looks)
-    if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
-    if (complementaryItemsSection) complementaryItemsSection.classList.remove('hidden');
-    if (favoritesSection) favoritesSection.classList.add('hidden');
 
     if (favoritesContainer) {
-      const initialFavorites = allOutfits.filter(o => o.liked);
-      renderCards(initialFavorites, favoritesContainer, true);
-      if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', initialFavorites.length > 0);
+        const initialFavorites = allOutfits.filter(o => o.liked);
+        renderCards(initialFavorites, favoritesContainer, true);
+        if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', initialFavorites.length > 0);
     }
-
+    
+    // Ensure correct initial view is shown (All Looks)
+    if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
+    if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
+    if (favoritesSection) favoritesSection.classList.add('hidden');
     currentView = 'all';
+
     updateFavoritesCount();
 
   } catch (err) {
@@ -442,7 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#darkModeToggle')?.addEventListener('click', toggleTheme);
   document.querySelector('#searchOutfits')?.addEventListener('input', filterAndRenderOutfits);
   document.querySelector('#styleFilter')?.addEventListener('change', filterAndRenderOutfits);
-  
+  document.querySelector('#discoverItemBtn')?.addEventListener('click', loadComplementaryItems);
+
   const viewFavoritesBtn = document.querySelector('#viewFavoritesBtn');
   const backToAllLooksBtn = document.querySelector('#backToAllLooksBtn');
   console.log("Buttons found on DOMContentLoaded:", { //to check if buttons are found in DOM.
