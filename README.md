@@ -61,7 +61,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Business Chic",
       "style": "Formal",
       "avatar": "https://i.pinimg.com/736x/7b/16/f1/7b16f13e23097bbd2f8bc8930b50c141.jpg",
-      "description": "",
       "liked": false
     },
     {
@@ -69,7 +68,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Vintage Street ware",
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/21/4e/0e/214e0ebcfb930c737bb6659c02ccde39.jpg",
-      "description": "",
       "liked": false
     },
     {
@@ -77,7 +75,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Korean Pastels",
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/6f/37/e6/6f37e630c604b99aaa0cd5baab438459.jpg",
-      "description": "",
       "liked": true
     },
     {
@@ -85,7 +82,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Old Money Aesthetic",
       "style": "Preppy",
       "avatar": "https://i.pinimg.com/736x/f1/75/85/f175857fce59692bacda2cf2ea36c2da.jpg",
-      "description": "",
       "liked": false
     },
     {
@@ -93,7 +89,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Cowboy Carter",
       "style": "Western",
       "avatar": "https://i.pinimg.com/736x/99/fc/44/99fc44489d84a0ef400bc0b94763135b.jpg",
-      "description": "",
       "liked": false
     },
     {
@@ -101,7 +96,6 @@ Create a file named db.json in the root of your project directory with the follo
       "name": "Glam Grunge",
       "style": "Maximalist",
       "avatar": "https://i.pinimg.com/736x/f8/e5/60/f8e5607d838ae7a5de8c5e5c7a632315.jpg",
-      "description": "",
       "liked": false
     }
   ]
