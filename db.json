@@ -6,7 +6,7 @@
       "style": "Formal",
       "avatar": "https://i.pinimg.com/736x/7b/16/f1/7b16f13e23097bbd2f8bc8930b50c141.jpg",
       "description": "Polished and sophisticated.",
-      "liked": false
+      "liked": "false"
     },
     {
       "id": "2",
@@ -14,7 +14,7 @@
       "style": "Casual",
       "avatar": "https://i.pinimg.com/736x/21/4e/0e/214e0ebcfb930c737bb6659c02ccde39.jpg",
       "description": "Retro and oversized",
-      "liked": false
+      "liked": "false"
     },
     {
       "id": "3",

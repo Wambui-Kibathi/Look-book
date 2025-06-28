@@ -1,8 +1,8 @@
-// statement.js
+//statement.js
 let allOutfits = [];
 let currentView = 'all';
 
-// APIs js
+//APIs js
 const LOCAL_API_URL = 'http://localhost:3000/outfits';
 const EXTERNAL_API_URL = 'https://fakestoreapi.com/products?limit=6';
 
@@ -11,80 +11,43 @@ async function fetchOutfits() {
   if (!response.ok) throw new Error('Failed to fetch outfits');
   const data = await response.json();
   console.log("Fetched outfits:", data);
-  return data.map(o => ({ ...o, liked: o.liked === true || o.liked === 'true', isBlurred: false }));
+  return data.map(o => ({ ...o, liked: o.liked === 'true', isBlurred: false }));
 }
 
 async function patchOutfitLike(outfitId, liked) {
   return await fetch(`${LOCAL_API_URL}/${outfitId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ liked: liked }) 
+    body: JSON.stringify({ liked: liked.toString() })
   });
 }
 
 async function fetchComplementaryItems() {
-  try {
-    const response = await fetch(EXTERNAL_API_URL);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log("Fetched complementary items:", data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching complementary items:", error);
-    throw error;
-  }
+  const response = await fetch(EXTERNAL_API_URL);
+  if (!response.ok) throw new Error('Failed to fetch products');
+  const data = await response.json();
+  console.log("Fetched complementary items:", data);
+  return data;
 }
 
-// DOM js Utilities
+//DOM js
 function resetSearchAndFilters() {
-  const searchInput = document.querySelector('#searchOutfits');
-  const styleFilter = document.querySelector('#styleFilter');
-  if (searchInput) searchInput.value = '';
-  if (styleFilter) styleFilter.value = '';
+  document.querySelector('#searchOutfits').value = '';
+  document.querySelector('#styleFilter').value = '';
 }
 
 function showToast(message, duration = 3000) {
   const toast = document.querySelector('#toastNotification');
-  if (!toast) {
-      console.warn("Toast notification element not found.");
-      return;
-  }
-
-  if (toast.showTimeout) {
-      clearTimeout(toast.showTimeout);
-  }
-  if (toast.hideTimeout) {
-      clearTimeout(toast.hideTimeout);
-  }
-  if (toast.hideCompleteTimeout) { 
-      clearTimeout(toast.hideCompleteTimeout);
-  }
-
   toast.textContent = message;
-
-  toast.classList.remove('hidden');
-
-  toast.showTimeout = setTimeout(() => {
-      toast.classList.add('show');
-  }, 10); 
-
-  toast.hideTimeout = setTimeout(() => {
-      toast.classList.remove('show');
-
-      toast.hideCompleteTimeout = setTimeout(() => {
-          toast.classList.add('hidden'); 
-      }, 300); 
-  }, duration);
+  toast.classList.remove('hidden', 'fade-out');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+  setTimeout(() => toast.classList.add('hidden'), duration + 300);
 }
 
 function updateFavoritesCount() {
   const count = allOutfits.filter(o => o.liked).length;
-  const favoritesCountElement = document.querySelector('#favoritesCount');
-  if (favoritesCountElement) {
-    favoritesCountElement.textContent = count;
-  }
+  document.querySelector('#favoritesCount').textContent = count;
 }
 
 function toggleTheme() {
@@ -94,15 +57,13 @@ function toggleTheme() {
   const isDark = root.classList.toggle('dark');
 
   localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
-  if (darkIcon) darkIcon.classList.toggle('hidden', isDark);
-  if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
+  darkIcon.classList.toggle('hidden', isDark);
+  lightIcon.classList.toggle('hidden', !isDark);
 }
 
 function toggleMenu() {
-  const menuLinks = document.querySelector('.menu-links');
-  const hamburgerIcon = document.querySelector('.hamburger-icon');
-  if (menuLinks) menuLinks.classList.toggle('open');
-  if (hamburgerIcon) hamburgerIcon.classList.toggle('open');
+  document.querySelector('.menu-links').classList.toggle('open');
+  document.querySelector('.hamburger-icon').classList.toggle('open');
 }
 
 function createOutfitCard(item) {
@@ -129,28 +90,87 @@ function createOutfitCard(item) {
   return card;
 }
 
-function setupLikeButtonEvent(button) {
-    if (button.dataset.listenerAttached) {
-        return;
-    }
+function setupLikeButtons(scope = document) {
+  const likeButtons = scope.querySelectorAll('.like-button');
+
+  likeButtons.forEach(button => {
     button.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const outfitId = parseInt(button.getAttribute('data-id'));
-        await toggleLike(outfitId);
+      e.stopPropagation(); // prevent bubbling if needed
+      const outfitId = parseInt(button.getAttribute('data-id'));
+      const outfit = allOutfits.find(item => item.id === outfitId);
+
+      if (!outfit) return;
+
+      // Toggle liked
+      outfit.liked = !outfit.liked;
+
+      // Update server
+      await fetch(`http://localhost:3000/outfits/${outfitId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ liked: outfit.liked })
+      });
+
+      // Update the heart icon only
+      const heartImg = button.querySelector('img.heart-icon');
+      heartImg.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
+
+      // If you're on the favorites page and unliking, remove the card from DOM
+      if (document.body.contains(document.querySelector('#favoritesContainer')) && !outfit.liked) {
+        const card = button.closest('.card');
+        card.remove();
+
+        // Show no favorites message if none left
+        const remainingFavorites = allOutfits.filter(o => o.liked);
+        if (remainingFavorites.length === 0) {
+          document.querySelector('#noFavoritesMessage').classList.remove('hidden');
+        }
+      }
     });
-    button.dataset.listenerAttached = 'true';
+  });
 }
 
-function setupOutfitCardClickEvent(card) {
-    if (card.dataset.cardListenerAttached) {
-        return;
-    }
-    card.addEventListener('click', e => {
-         if (!e.target.closest('.like-button')) {
-            toggleBlur(card.dataset.id);
-        }
-    });
-    card.dataset.cardListenerAttached = 'true';
+
+function addFavorite(outfit) {
+  const favoritesGrid = document.querySelector('.favorites-grid');
+  const noFavoritesMessage = document.querySelector('.no-favorites-message');
+  const favoritesCount = document.getElementById('favoritesCount');
+
+  // Update data
+  favorites.push(outfit);
+
+  // Update count
+  favoritesCount.textContent = favorites.length;
+
+  // Hide empty message
+  noFavoritesMessage.classList.add('hidden');
+
+  // Add new card only
+  const newCard = createOutfitCard(outfit);
+  favoritesGrid.appendChild(newCard);
+}
+
+function removeFavorite(outfitId) {
+  const favoritesGrid = document.querySelector('.favorites-grid');
+  const favoritesCount = document.getElementById('favoritesCount');
+  const noFavoritesMessage = document.querySelector('.no-favorites-message');
+
+  // Remove from data
+  favorites = favorites.filter(item => item.id !== outfitId);
+
+  // Remove card from DOM
+  const cardToRemove = favoritesGrid.querySelector(`[data-id="${outfitId}"]`);
+  if (cardToRemove) {
+    favoritesGrid.removeChild(cardToRemove);
+  }
+
+  // Update count
+  favoritesCount.textContent = favorites.length;
+
+  // Show empty message if no favorites left
+  if (favorites.length === 0) {
+    noFavoritesMessage.classList.remove('hidden');
+  }
 }
 
 function createProductCard(item) {
@@ -179,91 +199,74 @@ function renderCards(items, container, isOutfit = true) {
   for (const item of items) {
     const card = isOutfit ? createOutfitCard(item) : createProductCard(item);
     container.appendChild(card);
-    if (isOutfit) {
-      const likeButton = card.querySelector('.like-button');
-    }
   }
+
+  if (isOutfit) bindOutfitEvents(container);
+}
+
+function bindOutfitEvents(container) {
+  container.querySelectorAll('.outfit-card').forEach(card => {
+    card.onclick = e => {
+      if (!e.target.closest('.like-button')) toggleBlur(card.dataset.id);
+    };
+    const likeBtn = card.querySelector('.like-button');
+    likeBtn.onclick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleLike(likeBtn.dataset.id);
+    };
+  });
 }
 
 function toggleBlur(id) {
-  console.log("toggleBlur called for outfit ID:", id);
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
   outfit.isBlurred = !outfit.isBlurred;
   const card = document.querySelector(`.outfit-card[data-id="${id}"]`);
-  if (card) card.classList.toggle('blurred');
-
-  const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
-  if (complementaryItemsSection) {
-    if (outfit.isBlurred) {
-      complementaryItemsSection.classList.remove('hidden');
-      loadComplementaryItems();
-    } else {
-      complementaryItemsSection.classList.add('hidden');
-      document.querySelector('#complementaryItemsContainer').innerHTML = '';
-    }
-  }
+  card?.classList.toggle('blurred');
 }
 
 async function toggleLike(id) {
-  console.log(`toggleLike called for outfit ID: ${id}`);
   const outfit = allOutfits.find(o => o.id == id);
   if (!outfit) return;
 
-  const originalLikedState = outfit.liked;
   outfit.liked = !outfit.liked;
   updateFavoritesCount();
-
-  const card = document.querySelector(`.outfit-card[data-id="${id}"]`);
-  if (card) {
-  const heartIcon = card.querySelector('.heart-icon');
-  if (heartIcon) {
-    heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
-  }
-}
 
   try {
     await patchOutfitLike(id, outfit.liked);
     showToast(outfit.liked ? 'Try it out yourself!' : 'Removed from favorites');
 
-    const favoritesContainer = document.querySelector('#favoritesContainer');
-    if (favoritesContainer) {
-      const outfitCardInFavorites = favoritesContainer.querySelector(`.outfit-card[data-id="${id}"]`);
-
-      if (outfit.liked) {
-        if (!outfitCardInFavorites) {
-          const newCardForFavs = createOutfitCard(outfit);
-          favoritesContainer.appendChild(newCardForFavs);
-
-          const newLikeButton = newCardForFavs.querySelector('.like-button');
-          if (newLikeButton) setupLikeButtonEvent(newLikeButton);
-          setupOutfitCardClickEvent(newCardForFavs);
-        }
-      } else {
-        if (outfitCardInFavorites) {
-          outfitCardInFavorites.remove();
-        }
-      }
-      
-      const favCount = allOutfits.filter(o => o.liked).length;
-      document.querySelector('#noFavoritesMessage')?.classList.toggle('hidden', favCount > 0);
-    }
-
-  } catch (error) {
-    console.error("Failed to update like status:", error);
-    outfit.liked = originalLikedState;
-    updateFavoritesCount();
-    showToast('Failed to update like status');
-   
+    // Update heart icon
+    const heartIcon = document.querySelector(`.like-button[data-id="${id}"] .heart-icon`);
     if (heartIcon) {
       heartIcon.src = outfit.liked ? './Icons/heart-filled.png' : './Icons/heart.png';
     }
+
+    // Add or remove from favorites container
+    const favContainer = document.querySelector('#favoritesContainer');
+    const existingCard = favContainer.querySelector(`.outfit-card[data-id="${id}"]`);
+
+    if (outfit.liked && !existingCard) {
+      const card = createOutfitCard(outfit);
+      favContainer.appendChild(card);
+    } else if (!outfit.liked && existingCard) {
+      favContainer.removeChild(existingCard);
+    }
+
+    // Show/hide no-favorites message
+    const favCount = allOutfits.filter(o => o.liked).length;
+    document.querySelector('#noFavoritesMessage').classList.toggle('hidden', favCount > 0);
+
+  } catch {
+    outfit.liked = !outfit.liked; // Rollback
+    updateFavoritesCount();
+    showToast('Failed to update like status');
   }
 }
 
 function populateStyleFilter(outfits) {
   const filter = document.querySelector('#styleFilter');
-  if (!filter) return;
   filter.innerHTML = '<option value="">Filter by Style Category</option>';
   [...new Set(outfits.map(o => o.style))].sort().forEach(style => {
     const option = document.createElement('option');
@@ -274,128 +277,55 @@ function populateStyleFilter(outfits) {
 }
 
 function filterAndRenderOutfits() {
-  console.log("filterAndRenderOutfits called!");
-  const term = document.querySelector('#searchOutfits')?.value.toLowerCase() || '';
-  const selectedStyle = document.querySelector('#styleFilter')?.value || '';
-  
-  let outfitsToFilter = allOutfits;
-  if (currentView === 'favorites') {
-      outfitsToFilter = allOutfits.filter(o => o.liked);
-  }
-
-  const filtered = outfitsToFilter.filter(o =>
-    (o.name.toLowerCase().includes(term) || (o.description && o.description.toLowerCase().includes(term))) &&
+  const term = document.querySelector('#searchOutfits').value.toLowerCase();
+  const selectedStyle = document.querySelector('#styleFilter').value;
+  const outfits = currentView === 'all' ? allOutfits : allOutfits.filter(o => o.liked);
+  const filtered = outfits.filter(o =>
+    (o.name.toLowerCase().includes(term) || o.description.toLowerCase().includes(term)) &&
     (!selectedStyle || o.style === selectedStyle)
   );
+  renderCards(filtered, currentView === 'all' ? document.querySelector('#outfitsContainer') : document.querySelector('#favoriteOutfitsContainer'));
+}
 
-  const targetContainer = currentView === 'all' ? document.querySelector('#outfitsContainer') : document.querySelector('#favoritesContainer');
-  if (targetContainer) {
-      renderCards(filtered, targetContainer, true); 
-      if (currentView === 'favorites') {
-        document.querySelector('#noFavoritesMessage')?.classList.toggle('hidden', filtered.length > 0);
-      }
+function renderFavorites() {
+  const favorites = allOutfits.filter(o => o.liked);
+  const container = document.querySelector('#favoritesContainer');
+  container.innerHTML = '';
+
+  if (favorites.length === 0) {
+    document.querySelector('#noFavoritesMessage').classList.remove('hidden');
+  } else {
+    document.querySelector('#noFavoritesMessage').classList.add('hidden');
+    favorites.forEach(item => container.appendChild(createOutfitCard(item)));
   }
-}
 
-function renderFavoritesView() {
-  console.log("renderFavoritesView called");
-  currentView = 'favorites';
-  const outfitsMainSection = document.querySelector('#outfitsMainSection');
-  const favoritesSection = document.querySelector('#favoritesSection');
-  const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
-
-  console.log("Sections found (renderFavoritesView):", {
-    outfitsMainSection: !!outfitsMainSection, // true if found, false if null
-    favoritesSection: !!favoritesSection,
-    complementaryItemsSection: !!complementaryItemsSection
-  });
-
-  if (outfitsMainSection) outfitsMainSection.classList.add('hidden');
-  if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
-  if (favoritesSection) favoritesSection.classList.remove('hidden');
-  
-  console.log("Classes applied (renderFavoritesView):", {
-      outfitsMainSectionHidden: outfitsMainSection?.classList.contains('hidden'),
-      favoritesSectionHidden: favoritesSection?.classList.contains('hidden'), // Should be false
-      complementaryItemsSectionHidden: complementaryItemsSection?.classList.contains('hidden')
-  });
-
-  filterAndRenderOutfits();
-  resetSearchAndFilters();
-}
-
-function renderAllOutfitsView() {
-    console.log("renderAllOutfitsView called");
-    currentView = 'all';
-    const outfitsMainSection = document.querySelector('#outfitsMainSection');
-    const favoritesSection = document.querySelector('#favoritesSection');
-    const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
-
-    console.log("Sections found (renderAllOutfitsView):", {
-      outfitsMainSection: !!outfitsMainSection,
-      favoritesSection: !!favoritesSection,
-      complementaryItemsSection: !!complementaryItemsSection
-    });
-
-    if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
-    if (favoritesSection) favoritesSection.classList.add('hidden');
-    if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
-
-    console.log("Classes applied (renderAllOutfitsView):", {
-        outfitsMainSectionHidden: outfitsMainSection?.classList.contains('hidden'), // Should be false
-        favoritesSectionHidden: favoritesSection?.classList.contains('hidden'),
-        complementaryItemsSectionHidden: complementaryItemsSection?.classList.contains('hidden')
-    });
-
-    resetSearchAndFilters();
-    filterAndRenderOutfits();
+  // Set up like buttons for newly rendered cards
+  setupLikeButtons(container); 
 }
 
 async function loadComplementaryItems() {
-  
-  const container = document.querySelector('#complementaryItemsContainer');
-  const loading = document.querySelector('#complementaryLoading');
-
-  if (!container || !loading) return;
-
-  container.innerHTML = '';
-  loading.classList.remove('hidden');
+  document.querySelector('#loadingComplementaryItems').classList.remove('hidden');
+  document.querySelector('#complementaryItemsError').classList.add('hidden');
+  document.querySelector('#complementaryItemsContainer').innerHTML = '';
 
   try {
-    const response = await fetch('https://fakestoreapi.com/products');
-    const products = await response.json();
-
-    products.forEach(product => {
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('complementary-item');
-      itemDiv.innerHTML = `
-        <img src="${product.image}" alt="${product.title}">
-        <p>${product.title}</p>
-        <p>$${product.price}</p>
-      `;
-      container.appendChild(itemDiv);
-    });
-
-  } catch (error) {
-    console.error("Error loading complementary items:", error);
-    container.innerHTML = '<p style="color:red;">Failed to load complementary items.</p>';
+    const items = await fetchComplementaryItems();
+    renderCards(items, document.querySelector('#complementaryItemsContainer'), false);
+  } catch (err) {
+    document.querySelector('#complementaryItemsError').classList.remove('hidden');
+    const p = document.createElement('p');
+    p.textContent = 'Could not load suggested items.';
+    p.style.textAlign = 'center';
+    p.style.color = 'red';
+    document.querySelector('#complementaryItemsError').appendChild(p);
   } finally {
-    loading.classList.add('hidden');
+    document.querySelector('#loadingComplementaryItems').classList.add('hidden');
   }
 }
 
 async function initializeApp() {
-  const loadingIndicator = document.querySelector('#loadingIndicator');
-  const errorMessage = document.querySelector('#errorMessage');
-  const outfitsMainSection = document.querySelector('#outfitsMainSection');
-  const complementaryItemsSection = document.querySelector('#complementaryItemsSection');
-  const favoritesSection = document.querySelector('#favoritesSection');
-  const outfitsContainer = document.querySelector('#outfitsContainer');
-  const favoritesContainer = document.querySelector('#favoritesContainer');
-  const noFavoritesMessage = document.querySelector('#noFavoritesMessage');
-
-  if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-  if (errorMessage) errorMessage.classList.add('hidden');
+  document.querySelector('#loadingIndicator').classList.remove('hidden');
+  document.querySelector('#errorMessage').classList.add('hidden');
 
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const savedTheme = localStorage.getItem('color-theme');
@@ -407,120 +337,60 @@ async function initializeApp() {
     allOutfits = await fetchOutfits();
     populateStyleFilter(allOutfits);
     renderCards(allOutfits, document.querySelector('#outfitsContainer'));
-
-    await loadComplementaryItems(); //Preload complementary items once app initializes
-
-    // Show appropriate sections
-    document.querySelector('#outfitsMainSection')?.classList.remove('hidden');
-    document.querySelector('#complementaryItemsSection')?.classList.remove('hidden'); // Show complementary items on load
-    document.querySelector('#favoritesSection')?.classList.add('hidden');
-
-    if (outfitsContainer) {
-        renderCards(allOutfits, outfitsContainer);
-    }
-
-    if (favoritesContainer) {
-        const initialFavorites = allOutfits.filter(o => o.liked);
-        renderCards(initialFavorites, favoritesContainer, true);
-        if (noFavoritesMessage) noFavoritesMessage.classList.toggle('hidden', initialFavorites.length > 0);
-    }
-    
-    // Ensure correct initial view is shown (All Looks)
-    if (outfitsMainSection) outfitsMainSection.classList.remove('hidden');
-    if (complementaryItemsSection) complementaryItemsSection.classList.add('hidden');
-    if (favoritesSection) favoritesSection.classList.add('hidden');
-    currentView = 'all';
-
+    renderFavorites();
     updateFavoritesCount();
-
   } catch (err) {
-    console.error("Initialization error:", err);
-    if (errorMessage) {
-      errorMessage.classList.remove('hidden');
-      errorMessage.innerHTML = `
-        <p style="text-align: center; color: red;">
-          Oops! Could not load curated looks. Ensure <code>json-server</code> is running:<br>
-          <code style="display:block; background:#f0f0f0; padding:4px; border-radius:4px;">json-server --watch db.json --port 3000</code>
-        </p>`;
-    }
+    document.querySelector('#errorMessage').classList.remove('hidden');
+    document.querySelector('#errorMessage').innerHTML = `
+      <p style="text-align: center; color: red;">
+        Oops! Could not load curated looks. Ensure <code>json-server</code> is running:<br>
+        <code style="display:block; background:#f0f0f0; padding:4px; border-radius:4px;">json-server --watch db.json --port 3000</code>
+      </p>`;
   } finally {
-    if (loadingIndicator) loadingIndicator.classList.add('hidden');
+    document.querySelector('#loadingIndicator').classList.add('hidden');
   }
 }
 
+// More Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
-
   document.querySelector('#darkModeToggle')?.addEventListener('click', toggleTheme);
   document.querySelector('#searchOutfits')?.addEventListener('input', filterAndRenderOutfits);
   document.querySelector('#styleFilter')?.addEventListener('change', filterAndRenderOutfits);
-  document.querySelector('#discoverItemBtn')?.addEventListener('click', loadComplementaryItems);
-
-  const viewFavoritesBtn = document.querySelector('#viewFavoritesBtn');
-  const backToAllLooksBtn = document.querySelector('#backToAllLooksBtn');
-  console.log("Buttons found on DOMContentLoaded:", { //to check if buttons are found in DOM.
-      viewFavoritesBtn: !!viewFavoritesBtn,
-      backToAllLooksBtn: !!backToAllLooksBtn
+  document.querySelector('#viewFavoritesBtn')?.addEventListener('click', () => {
+    const favoritesSection = document.querySelector('#favoritesContainer');
+    if (favoritesSection) {
+      favoritesSection.scrollIntoView({ behavior: 'smooth' });
+    }
   });
 
-  if (viewFavoritesBtn) {
-    viewFavoritesBtn.addEventListener('click', () => {
-      console.log("#viewFavoritesBtn clicked!");
-      renderFavoritesView();
-      const favoritesSection = document.querySelector('#favoritesSection');
-      if (favoritesSection) {
-        favoritesSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  } else {
-    console.warn("Element with ID '#viewFavoritesBtn' not found!");
-  }
+  document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
+});
 
-  if (backToAllLooksBtn) {
-    backToAllLooksBtn.addEventListener('click', () => {
-        console.log("#backToAllLooksBtn clicked!");
-        renderAllOutfitsView();
-    });
-  } else {
-    console.warn("Element with ID '#backToAllLooksBtn' not found!");
-  }
-
-  const outfitsContainer = document.querySelector('#outfitsContainer');
-  if (outfitsContainer) {
-    outfitsContainer.addEventListener('click', async (e) => {
-      const likeBtn = e.target.closest('.like-button');
-      if (likeBtn) {
-        e.stopPropagation();
-        const outfitId = parseInt(likeBtn.getAttribute('data-id'));
-        await toggleLike(outfitId);
-      }
-    });
-  }
-
+document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('newsletter');
   const emailInput = document.getElementById('newsletterEmail');
   const messageDisplay = document.getElementById('newsletterMessage');
 
-  if (form && emailInput && messageDisplay) { 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-
-      if (emailInput.checkValidity()) { 
-        messageDisplay.textContent = `Thank you for subscribing, ${email}!`;
-        messageDisplay.style.color = '#d4edda'; 
-        emailInput.value = ''; 
-      } else {
-        messageDisplay.textContent = 'Please enter a valid email address.';
-        messageDisplay.style.color = '#f8d7da';
-      }
-
-      messageDisplay.classList.remove('hidden');
-      setTimeout(() => messageDisplay.classList.add('hidden'), 5000);
-    });
-  } else {
-    console.error("Newsletter form elements not found on DOMContentLoaded.");
+  if (!form || !emailInput || !messageDisplay) {
+    console.error("Newsletter form elements not found.");
+    return;
   }
 
-  document.querySelector('#discoverItemsBtn')?.addEventListener('click', loadComplementaryItems);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+
+    if (emailInput.checkValidity()) {
+      messageDisplay.textContent = `Thank you for subscribing, ${email}!`;
+      messageDisplay.style.color = '#d4edda';
+      emailInput.value = '';
+    } else {
+      messageDisplay.textContent = 'Please enter a valid email address.';
+      messageDisplay.style.color = '#f8d7da';
+    }
+
+    messageDisplay.classList.remove('hidden');
+    setTimeout(() => messageDisplay.classList.add('hidden'), 5000);
+  });
 });
