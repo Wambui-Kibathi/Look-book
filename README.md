@@ -10,7 +10,7 @@ Look-book is a simple web application designed to showcase various fashion outfi
 
 4. Complementary Items: Clicking on the discover more items-button reveals a section for complementary products, enhancing the user's fashion exploration.
 
-5. Search Functionality: Easily search outfits by name or description.
+5. Search Functionality: Easily search outfits by name.
 
 6. Dark Mode Toggle: Switch between light and dark themes for a personalized Browse experience.
 

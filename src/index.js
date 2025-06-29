@@ -171,8 +171,9 @@ function filterAndRenderOutfits() {
   const term = document.querySelector('#searchOutfits').value.toLowerCase();
   const selectedStyle = document.querySelector('#styleFilter').value;
   const outfits = currentView === 'all' ? allOutfits : allOutfits.filter(o => o.liked);
+
   const filtered = outfits.filter(o =>
-    (o.name.toLowerCase().includes(term) || o.description.toLowerCase().includes(term)) &&
+    (o.name.toLowerCase().includes(term) || o.style.toLowerCase().includes(term)) &&
     (!selectedStyle || o.style === selectedStyle)
   );
 
